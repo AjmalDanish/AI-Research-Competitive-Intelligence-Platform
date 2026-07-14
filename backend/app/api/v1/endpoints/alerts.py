@@ -1,0 +1,182 @@
+"""
+Alert and notification endpoints.
+"""
+
+from fastapi import APIRouter, Depends, HTTPException, status, Query
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+from typing import Optional
+
+from app.db.session import get_db
+from app.models.alert import Alert, AlertRule
+from app.core.logging import get_logger
+
+router = APIRouter()
+logger = get_logger(__name__)
+
+
+@router.get("")
+async def list_alerts(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(20, ge=1, le=100),
+    status: Optional[str] = None,
+    priority: Optional[str] = None,
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    List alerts with filtering and pagination.
+    """
+    query = select(Alert)
+    
+    if status:
+        query = query.where(Alert.status == status)
+    
+    if priority:
+        query = query.where(Alert.priority == priority)
+    
+    query = query.order_by(Alert.created_at.desc()).offset(skip).limit(limit)
+    result = await db.execute(query)
+    alerts = result.scalars().all()
+    
+    return {
+        "alerts": [
+            {
+                "id": alert.id,
+                "user_id": alert.user_id,
+                "title": alert.title,
+                "message": alert.message,
+                "alert_type": alert.alert_type,
+                "priority": alert.priority,
+                "status": alert.status,
+                "read": alert.read,
+                "created_at": alert.created_at,
+            }
+            for alert in alerts
+        ],
+        "total": len(alerts),
+        "skip": skip,
+        "limit": limit,
+    }
+
+
+@router.post("", status_code=status.HTTP_201_CREATED)
+async def create_alert(
+    user_id: int,
+    title: str,
+    alert_type: str,
+    message: Optional[str] = None,
+    priority: Optional[str] = "medium",
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Create a new alert.
+    """
+    alert = Alert(
+        user_id=user_id,
+        title=title,
+        message=message,
+        alert_type=alert_type,
+        priority=priority,
+        status="pending",
+    )
+    
+    db.add(alert)
+    await db.commit()
+    await db.refresh(alert)
+    
+    logger.info(f"New alert created: {alert.title}")
+    
+    return {
+        "id": alert.id,
+        "message": "Alert created successfully",
+    }
+
+
+@router.put("/{alert_id}/read")
+async def mark_alert_read(
+    alert_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Mark an alert as read.
+    """
+    result = await db.execute(
+        select(Alert).where(Alert.id == alert_id)
+    )
+    alert = result.scalar_one_or_none()
+    
+    if not alert:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Alert not found"
+        )
+    
+    alert.read = True
+    await db.commit()
+    
+    return {"message": "Alert marked as read"}
+
+
+@router.get("/rules")
+async def list_alert_rules(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(20, ge=1, le=100),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    List alert rules with pagination.
+    """
+    query = select(AlertRule).offset(skip).limit(limit)
+    result = await db.execute(query)
+    rules = result.scalars().all()
+    
+    return {
+        "rules": [
+            {
+                "id": rule.id,
+                "user_id": rule.user_id,
+                "name": rule.name,
+                "description": rule.description,
+                "alert_type": rule.alert_type,
+                "priority": rule.priority,
+                "is_active": rule.is_active,
+                "trigger_count": rule.trigger_count,
+                "created_at": rule.created_at,
+            }
+            for rule in rules
+        ],
+        "total": len(rules),
+        "skip": skip,
+        "limit": limit,
+    }
+
+
+@router.post("/rules", status_code=status.HTTP_201_CREATED)
+async def create_alert_rule(
+    user_id: int,
+    name: str,
+    alert_type: str,
+    conditions: dict,
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Create a new alert rule.
+    """
+    rule = AlertRule(
+        user_id=user_id,
+        name=name,
+        alert_type=alert_type,
+        conditions=conditions,
+        is_active=True,
+    )
+    
+    db.add(rule)
+    await db.commit()
+    await db.refresh(rule)
+    
+    logger.info(f"New alert rule created: {rule.name}")
+    
+    return {
+        "id": rule.id,
+        "message": "Alert rule created successfully",
+    }
