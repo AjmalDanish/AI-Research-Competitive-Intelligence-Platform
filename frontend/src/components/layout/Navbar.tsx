@@ -12,7 +12,6 @@ import {
 import {
   Menu as MenuIcon,
   Notifications,
-  AccountCircle,
   Dashboard as DashboardIcon,
   Search as SearchIcon,
 } from '@mui/icons-material';

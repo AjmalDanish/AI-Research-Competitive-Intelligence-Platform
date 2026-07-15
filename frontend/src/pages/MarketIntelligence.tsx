@@ -6,7 +6,6 @@ import {
   CardContent,
   Grid,
   Button,
-  TextField,
   MenuItem,
   Select,
   FormControl,
@@ -15,15 +14,15 @@ import {
   Alert,
   Tabs,
   Tab,
+  Chip,
 } from '@mui/material';
 import {
   TrendingUp as TrendingUpIcon,
   TrendingDown as TrendingDownIcon,
   AutoGraph as AutoGraphIcon,
-  Insights as InsightsIcon,
 } from '@mui/icons-material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, BarChart, Bar } from 'recharts';
-import { marketAPI, newsAPI } from '../services/api';
+
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -57,18 +56,6 @@ export default function MarketIntelligence() {
   const loadMarketData = async () => {
     try {
       setLoading(true);
-
-      // Load market trends
-      const trendsResponse = await marketAPI.trends();
-      const trends = trendsResponse.data || [];
-
-      // Load forecasts
-      const forecastResponse = await marketAPI.forecast();
-      const forecast = forecastResponse.data || [];
-
-      // Load news
-      const newsResponse = await newsAPI.list();
-      const newsData = newsResponse.data || [];
 
       // Process trend data based on time range
       const months = timeRange === '3m' ? 3 : timeRange === '6m' ? 6 : 12;
@@ -357,7 +344,7 @@ export default function MarketIntelligence() {
                 </Typography>
                 <Box sx={{ mt: 2 }}>
                   {news.map((item) => (
-                    <Card key={item.id} sx={{ mb: 2, cursor: 'pointer' }} hover>
+                    <Card key={item.id} sx={{ mb: 2, cursor: 'pointer', '&:hover': { boxShadow: 3 } }}>
                       <CardContent>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                           <Box sx={{ flex: 1 }}>

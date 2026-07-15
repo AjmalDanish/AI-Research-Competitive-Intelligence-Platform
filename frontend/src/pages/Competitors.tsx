@@ -31,8 +31,6 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   Business as BusinessIcon,
-  TrendingUp as TrendingUpIcon,
-  TrendingDown as TrendingDownIcon,
   Visibility as VisibilityIcon,
 } from '@mui/icons-material';
 import { competitorsAPI } from '../services/api';

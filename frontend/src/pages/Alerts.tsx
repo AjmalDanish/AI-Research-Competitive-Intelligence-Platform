@@ -26,11 +26,9 @@ import {
 import {
   Add as AddIcon,
   NotificationsActive as NotificationsActiveIcon,
-  CheckCircle as CheckCircleIcon,
   Delete as DeleteIcon,
   Edit as EditIcon,
   MarkEmailRead as MarkEmailReadIcon,
-  FilterList as FilterListIcon,
 } from '@mui/icons-material';
 import { alertsAPI } from '../services/api';
 
@@ -225,7 +223,6 @@ export default function Alerts() {
                   value={filter}
                   label="Filter by Type"
                   onChange={(e) => setFilter(e.target.value)}
-                  startIcon={<FilterListIcon />}
                 >
                   <MenuItem value="all">All Types</MenuItem>
                   <MenuItem value="competitor">Competitor</MenuItem>

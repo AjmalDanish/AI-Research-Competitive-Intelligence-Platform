@@ -14,7 +14,7 @@ import {
   Notifications as NotificationsIcon,
   Assessment as AssessmentIcon,
 } from '@mui/icons-material';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { competitorsAPI, marketAPI, alertsAPI } from '../services/api';
 
 interface StatCard {

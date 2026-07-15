@@ -22,7 +22,6 @@ import {
   Person as PersonIcon,
   Notifications as NotificationsIcon,
   Security as SecurityIcon,
-  Storage as StorageIcon,
   Palette as PaletteIcon,
   Save as SaveIcon,
 } from '@mui/icons-material';

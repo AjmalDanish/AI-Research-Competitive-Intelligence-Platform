@@ -20,8 +20,8 @@ import {
   Lightbulb as LightbulbIcon,
   Warning as WarningIcon,
 } from '@mui/icons-material';
-import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
-import { analyticsAPI, competitorsAPI } from '../services/api';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
+
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -42,9 +42,7 @@ export default function Analytics() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [tabValue, setTabValue] = useState(0);
-  const [competitors, setCompetitors] = useState<any[]>([]);
   const [swotData, setSwotData] = useState<any[]>([]);
-  const [insights, setInsights] = useState<any[]>([]);
 
   useEffect(() => {
     loadAnalyticsData();
@@ -53,14 +51,6 @@ export default function Analytics() {
   const loadAnalyticsData = async () => {
     try {
       setLoading(true);
-
-      // Load competitors
-      const competitorsResponse = await competitorsAPI.list();
-      setCompetitors(competitorsResponse.data || []);
-
-      // Load insights
-      const insightsResponse = await analyticsAPI.insights();
-      setInsights(insightsResponse.data || []);
 
       // Mock SWOT data
       setSwotData([
