@@ -71,7 +71,64 @@ export default function Reports() {
     try {
       setLoading(true);
       const response = await reportsAPI.list();
-      setReports(response.data || []);
+      let reportsData = response.data?.reports || response.data || [];
+      
+      // If no data, use mock data
+      if (reportsData.length === 0) {
+        reportsData = [
+          {
+            id: '1',
+            title: 'Competitor Analysis Report Q3 2024',
+            description: 'Comprehensive analysis of top 5 competitors including market positioning, strengths, weaknesses, and strategic recommendations.',
+            type: 'competitor',
+            format: 'pdf',
+            status: 'ready',
+            created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+            file_size: '2.4 MB',
+          },
+          {
+            id: '2',
+            title: 'Market Intelligence Summary',
+            description: 'Summary of market trends, opportunities, and threats in the enterprise software sector.',
+            type: 'market',
+            format: 'excel',
+            status: 'ready',
+            created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+            file_size: '1.8 MB',
+          },
+          {
+            id: '3',
+            title: 'Q2 Performance Analytics',
+            description: 'Detailed performance analysis with key metrics, growth trends, and predictive insights.',
+            type: 'analytics',
+            format: 'pdf',
+            status: 'ready',
+            created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+            file_size: '3.1 MB',
+          },
+          {
+            id: '4',
+            title: 'Industry Trends Forecast',
+            description: '15-month forecast of key industry trends with confidence intervals and scenario analysis.',
+            type: 'market',
+            format: 'csv',
+            status: 'generating',
+            created_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+          },
+          {
+            id: '5',
+            title: 'Competitive Positioning Analysis',
+            description: 'SWOT analysis and competitive positioning matrix for primary competitors.',
+            type: 'competitor',
+            format: 'pdf',
+            status: 'ready',
+            created_at: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+            file_size: '1.5 MB',
+          },
+        ];
+      }
+      
+      setReports(reportsData);
     } catch (err: any) {
       setError('Failed to load reports');
       console.error(err);

@@ -67,14 +67,66 @@ export default function Alerts() {
     try {
       setLoading(true);
       const response = await alertsAPI.list();
-      let filteredAlerts = response.data || [];
+      let alertsData = response.data?.alerts || response.data || [];
+      
+      // If no data, use mock data
+      if (alertsData.length === 0) {
+        alertsData = [
+          {
+            id: 1,
+            title: 'Competitor Price Change Detected',
+            description: 'TechCorp reduced pricing for Enterprise Analytics Suite by 20%',
+            alert_type: 'competitor',
+            severity: 'high',
+            status: 'active',
+            is_read: false,
+            created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+            triggered_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+          },
+          {
+            id: 2,
+            title: 'New Product Launch Alert',
+            description: 'TechCorp launched new AI-powered analytics platform',
+            alert_type: 'product',
+            severity: 'medium',
+            status: 'active',
+            is_read: false,
+            created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+            triggered_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+          },
+          {
+            id: 3,
+            title: 'Market Trend Alert',
+            description: 'AI platform adoption accelerating in enterprise segment',
+            alert_type: 'market',
+            severity: 'medium',
+            status: 'active',
+            is_read: true,
+            created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+            triggered_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+          },
+          {
+            id: 4,
+            title: 'Funding Announcement',
+            description: 'Competitor raised $50M Series B round',
+            alert_type: 'competitor',
+            severity: 'high',
+            status: 'triggered',
+            is_read: false,
+            created_at: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
+            triggered_at: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
+          },
+        ];
+      }
+
+      let filteredAlerts = alertsData;
 
       if (filter !== 'all') {
-        filteredAlerts = filteredAlerts.filter((alert: Alert) => alert.type === filter);
+        filteredAlerts = filteredAlerts.filter((alert: any) => alert.alert_type === filter || alert.type === filter);
       }
 
       if (showUnreadOnly) {
-        filteredAlerts = filteredAlerts.filter((alert: Alert) => !alert.is_read);
+        filteredAlerts = filteredAlerts.filter((alert: any) => !alert.is_read);
       }
 
       setAlerts(filteredAlerts);
