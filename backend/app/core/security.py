@@ -45,6 +45,9 @@ def get_password_hash(password: str) -> str:
     Returns:
         str: Hashed password
     """
+    # Truncate password to 72 characters for bcrypt
+    if len(password) > 72:
+        password = password[:72]
     return pwd_context.hash(password)
 
 

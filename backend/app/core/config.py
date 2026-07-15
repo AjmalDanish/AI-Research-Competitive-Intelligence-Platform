@@ -31,7 +31,7 @@ class Settings(BaseSettings):
     # API
     API_V1_STR: str = "/api/v1"
     ALLOWED_ORIGINS: List[str] = Field(
-        default=["http://localhost:3000", "http://127.0.0.1:3000"]
+        default=["http://localhost:3000", "http://localhost:3001", "http://127.0.0.1:3000", "http://127.0.0.1:3001", "http://192.168.31.137:3000", "http://192.168.31.137:3001"]
     )
     
     # Security
