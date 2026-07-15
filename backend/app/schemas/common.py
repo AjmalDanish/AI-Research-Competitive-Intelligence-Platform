@@ -15,7 +15,7 @@ class PaginationParams(BaseModel):
     page: int = Field(default=1, ge=1, description="Page number")
     page_size: int = Field(default=20, ge=1, le=100, description="Items per page")
     sort_by: Optional[str] = Field(default=None, description="Field to sort by")
-    sort_order: Optional[str] = Field(default="desc", regex="^(asc|desc)$", description="Sort order")
+    sort_order: Optional[str] = Field(default="desc", pattern="^(asc|desc)$", description="Sort order")
     
     model_config = ConfigDict(extra="forbid")
 
@@ -126,7 +126,7 @@ class SearchParams(BaseModel):
 class ExportParams(BaseModel):
     """Export parameters for data export."""
     
-    format: str = Field(default="json", regex="^(json|csv|excel|pdf)$", description="Export format")
+    format: str = Field(default="json", pattern="^(json|csv|excel|pdf)$", description="Export format")
     include_fields: Optional[List[str]] = Field(default=None, description="Fields to include")
     exclude_fields: Optional[List[str]] = Field(default=None, description="Fields to exclude")
     date_range: Optional[dict] = Field(default=None, description="Date range filter")

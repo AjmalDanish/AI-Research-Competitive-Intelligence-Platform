@@ -3,164 +3,131 @@ Pydantic schemas for API validation.
 """
 
 from app.schemas.competitor import (
-    CompetitorBase,
     CompetitorCreate,
     CompetitorUpdate,
-    CompetitorInDB,
     CompetitorResponse,
-    CompetitorActivityBase,
-    CompetitorActivityCreate,
-    CompetitorActivityUpdate,
-    CompetitorActivityInDB,
-    CompetitorActivityResponse,
-    CompetitorProductBase,
-    CompetitorProductCreate,
-    CompetitorProductUpdate,
-    CompetitorProductInDB,
-    CompetitorProductResponse,
-    CompetitorNewsBase,
-    CompetitorNewsCreate,
-    CompetitorNewsUpdate,
-    CompetitorNewsInDB,
-    CompetitorNewsResponse,
+    CompetitorListResponse,
 )
 
 from app.schemas.market import (
-    MarketTrendBase,
-    MarketTrendCreate,
-    MarketTrendUpdate,
-    MarketTrendInDB,
-    MarketTrendResponse,
-    MarketSegmentBase,
-    MarketSegmentCreate,
-    MarketSegmentUpdate,
-    MarketSegmentInDB,
-    MarketSegmentResponse,
-    MarketIntelligenceBase,
     MarketIntelligenceCreate,
     MarketIntelligenceUpdate,
-    MarketIntelligenceInDB,
     MarketIntelligenceResponse,
+    MarketAnalysisResponse,
 )
 
 from app.schemas.user import (
-    UserBase,
     UserCreate,
     UserUpdate,
-    UserInDB,
     UserResponse,
-    UserLogin,
-    Token,
-    TokenPayload,
-    ApiKeyBase,
-    ApiKeyCreate,
-    ApiKeyResponse,
+    TokenResponse,
 )
 
 from app.schemas.alert import (
-    AlertBase,
     AlertCreate,
     AlertUpdate,
-    AlertInDB,
     AlertResponse,
-    AlertRuleBase,
-    AlertRuleCreate,
-    AlertRuleUpdate,
-    AlertRuleResponse,
-    SavedSearchBase,
-    SavedSearchCreate,
-    SavedSearchUpdate,
-    SavedSearchResponse,
-    ReportBase,
+    AlertListResponse,
+)
+
+from app.schemas.activity import (
+    ActivityCreate,
+    ActivityResponse,
+    ActivityListResponse,
+)
+
+from app.schemas.report import (
     ReportCreate,
     ReportUpdate,
     ReportResponse,
+    ReportListResponse,
+)
+
+from app.schemas.product import (
+    ProductCreate,
+    ProductUpdate,
+    ProductResponse,
+    ProductListResponse,
+)
+
+from app.schemas.news import (
+    NewsCreate,
+    NewsUpdate,
+    NewsResponse,
+    NewsListResponse,
+    NewsSearchResponse,
+)
+
+from app.schemas.search import (
+    SearchQuery,
+    SearchResponse,
+    SavedSearchCreate,
+    SavedSearchUpdate,
+    SavedSearchResponse,
 )
 
 from app.schemas.common import (
-    PaginationParams,
-    PaginatedResponse,
     MessageResponse,
     HealthResponse,
-    ErrorResponse,
 )
 
 __all__ = [
     # Competitor schemas
-    "CompetitorBase",
     "CompetitorCreate",
     "CompetitorUpdate",
-    "CompetitorInDB",
     "CompetitorResponse",
-    "CompetitorActivityBase",
-    "CompetitorActivityCreate",
-    "CompetitorActivityUpdate",
-    "CompetitorActivityInDB",
-    "CompetitorActivityResponse",
-    "CompetitorProductBase",
-    "CompetitorProductCreate",
-    "CompetitorProductUpdate",
-    "CompetitorProductInDB",
-    "CompetitorProductResponse",
-    "CompetitorNewsBase",
-    "CompetitorNewsCreate",
-    "CompetitorNewsUpdate",
-    "CompetitorNewsInDB",
-    "CompetitorNewsResponse",
+    "CompetitorListResponse",
     
     # Market schemas
-    "MarketTrendBase",
-    "MarketTrendCreate",
-    "MarketTrendUpdate",
-    "MarketTrendInDB",
-    "MarketTrendResponse",
-    "MarketSegmentBase",
-    "MarketSegmentCreate",
-    "MarketSegmentUpdate",
-    "MarketSegmentInDB",
-    "MarketSegmentResponse",
-    "MarketIntelligenceBase",
     "MarketIntelligenceCreate",
     "MarketIntelligenceUpdate",
-    "MarketIntelligenceInDB",
     "MarketIntelligenceResponse",
+    "MarketAnalysisResponse",
     
     # User schemas
-    "UserBase",
     "UserCreate",
     "UserUpdate",
-    "UserInDB",
     "UserResponse",
-    "UserLogin",
-    "Token",
-    "TokenPayload",
-    "ApiKeyBase",
-    "ApiKeyCreate",
-    "ApiKeyResponse",
+    "TokenResponse",
     
     # Alert schemas
-    "AlertBase",
     "AlertCreate",
     "AlertUpdate",
-    "AlertInDB",
     "AlertResponse",
-    "AlertRuleBase",
-    "AlertRuleCreate",
-    "AlertRuleUpdate",
-    "AlertRuleResponse",
-    "SavedSearchBase",
-    "SavedSearchCreate",
-    "SavedSearchUpdate",
-    "SavedSearchResponse",
-    "ReportBase",
+    "AlertListResponse",
+    
+    # Activity schemas
+    "ActivityCreate",
+    "ActivityResponse",
+    "ActivityListResponse",
+    
+    # Report schemas
     "ReportCreate",
     "ReportUpdate",
     "ReportResponse",
+    "ReportListResponse",
+    
+    # Product schemas
+    "ProductCreate",
+    "ProductUpdate",
+    "ProductResponse",
+    "ProductListResponse",
+    
+    # News schemas
+    "NewsCreate",
+    "NewsUpdate",
+    "NewsResponse",
+    "NewsListResponse",
+    "NewsSearchResponse",
+    
+    # Search schemas
+    "SearchQuery",
+    "SearchResponse",
+    "SavedSearchCreate",
+    "SavedSearchUpdate",
+    "SavedSearchResponse",
     
     # Common schemas
-    "PaginationParams",
-    "PaginatedResponse",
     "MessageResponse",
     "HealthResponse",
-    "ErrorResponse",
 ]

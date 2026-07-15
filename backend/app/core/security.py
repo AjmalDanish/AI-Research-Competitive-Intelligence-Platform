@@ -242,3 +242,54 @@ def create_refresh_token(subject: str | Any) -> str:
     """
     expires_delta = timedelta(days=30)
     return create_access_token(subject, expires_delta, {"type": "refresh"})
+
+
+def get_current_user_dependency(optional: bool = False):
+    """
+    Create a dependency for getting the current user.
+    
+    Args:
+        optional: If True, returns None instead of raising exception
+        
+    Returns:
+        Dependency function that returns user_id or None
+    """
+    async def get_current_user(
+        credentials: HTTPAuthorizationCredentials = Depends(security)
+    ) -> Optional[str]:
+        """
+        Get the current user from JWT token.
+        
+        Args:
+            credentials: HTTP authorization credentials
+            
+        Returns:
+            str: User ID if authenticated
+            
+        Raises:
+            HTTPException: If authentication fails
+        """
+        if credentials is None:
+            if optional:
+                return None
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Not authenticated",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        
+        token = credentials.credentials
+        user_id = verify_token(token)
+        
+        if user_id is None:
+            if optional:
+                return None
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid authentication credentials",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        
+        return user_id
+    
+    return get_current_user
