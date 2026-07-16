@@ -18,9 +18,39 @@ from app.models.alert import Report
 from app.core.logging import get_logger
 from app.core.security import get_current_user
 from app.models.user import User
+from sqlalchemy import select
 
 router = APIRouter()
 logger = get_logger(__name__)
+
+
+async def get_current_user_object(
+    user_id: str = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+) -> User:
+    """
+    Get current user object from JWT token.
+    
+    Args:
+        user_id: Current user ID from JWT token
+        db: Database session
+        
+    Returns:
+        User: Current user object
+        
+    Raises:
+        HTTPException: If user not found
+    """
+    result = await db.execute(select(User).where(User.id == int(user_id)))
+    user = result.scalar_one_or_none()
+    
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    return user
 
 
 # Pydantic models for request/response
@@ -45,7 +75,7 @@ async def list_reports(
     limit: int = Query(20, ge=1, le=100),
     report_type: Optional[str] = None,
     status: Optional[str] = None,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user_object),
     db: AsyncSession = Depends(get_db)
 ):
     """
@@ -88,7 +118,7 @@ async def list_reports(
 @router.post("", status_code=status.HTTP_201_CREATED)
 async def create_report(
     report_data: ReportCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user_object),
     db: AsyncSession = Depends(get_db)
 ):
     """
@@ -120,7 +150,7 @@ async def create_report(
 @router.post("/generate", status_code=status.HTTP_201_CREATED)
 async def generate_report(
     report_data: ReportCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user_object),
     db: AsyncSession = Depends(get_db)
 ):
     """
@@ -190,7 +220,7 @@ async def generate_report(
 @router.get("/{report_id}/download")
 async def download_report(
     report_id: int,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user_object),
     db: AsyncSession = Depends(get_db)
 ):
     """
@@ -249,7 +279,7 @@ async def download_report(
 async def update_report(
     report_id: int,
     report_update: ReportUpdate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user_object),
     db: AsyncSession = Depends(get_db)
 ):
     """
@@ -291,7 +321,7 @@ async def update_report(
 @router.delete("/{report_id}")
 async def delete_report(
     report_id: int,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user_object),
     db: AsyncSession = Depends(get_db)
 ):
     """

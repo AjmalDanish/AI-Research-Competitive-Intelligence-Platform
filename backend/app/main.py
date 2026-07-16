@@ -6,7 +6,8 @@ necessary middleware, routes, and dependencies.
 """
 
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, RedirectResponse
+from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles

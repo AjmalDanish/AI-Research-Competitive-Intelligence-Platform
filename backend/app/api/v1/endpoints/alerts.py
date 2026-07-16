@@ -13,27 +13,57 @@ from app.models.alert import Alert, AlertRule
 from app.core.logging import get_logger
 from app.core.security import get_current_user
 from app.models.user import User
+from sqlalchemy import select
 
 router = APIRouter()
 logger = get_logger(__name__)
 
 
+async def get_current_user_object(
+    user_id: str = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+) -> User:
+    """
+    Get current user object from JWT token.
+    
+    Args:
+        user_id: Current user ID from JWT token
+        db: Database session
+        
+    Returns:
+        User: Current user object
+        
+    Raises:
+        HTTPException: If user not found
+    """
+    result = await db.execute(select(User).where(User.id == int(user_id)))
+    user = result.scalar_one_or_none()
+    
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    return user
+
+
 # Pydantic models for request/response
 class AlertUpdate(BaseModel):
     title: Optional[str] = None
-    description: Optional[str] = None
-    type: Optional[str] = None
-    severity: Optional[str] = None
+    message: Optional[str] = None
+    alert_type: Optional[str] = None
+    priority: Optional[str] = None
     status: Optional[str] = None
-    is_read: Optional[bool] = None
+    read: Optional[bool] = None
 
 
 class AlertCreate(BaseModel):
     title: str
-    description: Optional[str] = None
-    type: str
-    severity: str = "medium"
-    status: str = "active"
+    message: Optional[str] = None
+    alert_type: str
+    priority: str = "medium"
+    status: str = "pending"
 
 
 @router.get("")
@@ -83,7 +113,7 @@ async def list_alerts(
 @router.post("", status_code=status.HTTP_201_CREATED)
 async def create_alert(
     alert_data: AlertCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user_object),
     db: AsyncSession = Depends(get_db)
 ):
     """
@@ -92,9 +122,9 @@ async def create_alert(
     alert = Alert(
         user_id=current_user.id,
         title=alert_data.title,
-        message=alert_data.description or "",
-        alert_type=alert_data.type,
-        priority=alert_data.severity,
+        message=alert_data.message or "",
+        alert_type=alert_data.alert_type,
+        priority=alert_data.priority,
         status=alert_data.status,
         read=False,
     )
@@ -115,7 +145,7 @@ async def create_alert(
 async def update_alert(
     alert_id: int,
     alert_update: AlertUpdate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user_object),
     db: AsyncSession = Depends(get_db)
 ):
     """
@@ -135,16 +165,16 @@ async def update_alert(
     # Update fields that are provided
     if alert_update.title is not None:
         alert.title = alert_update.title
-    if alert_update.description is not None:
-        alert.message = alert_update.description
-    if alert_update.type is not None:
-        alert.alert_type = alert_update.type
-    if alert_update.severity is not None:
-        alert.priority = alert_update.severity
+    if alert_update.message is not None:
+        alert.message = alert_update.message
+    if alert_update.alert_type is not None:
+        alert.alert_type = alert_update.alert_type
+    if alert_update.priority is not None:
+        alert.priority = alert_update.priority
     if alert_update.status is not None:
         alert.status = alert_update.status
-    if alert_update.is_read is not None:
-        alert.read = alert_update.is_read
+    if alert_update.read is not None:
+        alert.read = alert_update.read
     
     await db.commit()
     await db.refresh(alert)
@@ -159,14 +189,13 @@ async def update_alert(
         "priority": alert.priority,
         "status": alert.status,
         "read": alert.read,
-        "updated_at": alert.updated_at,
     }
 
 
 @router.delete("/{alert_id}")
 async def delete_alert(
     alert_id: int,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user_object),
     db: AsyncSession = Depends(get_db)
 ):
     """
@@ -194,7 +223,7 @@ async def delete_alert(
 @router.put("/{alert_id}/read")
 async def mark_alert_read(
     alert_id: int,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user_object),
     db: AsyncSession = Depends(get_db)
 ):
     """
