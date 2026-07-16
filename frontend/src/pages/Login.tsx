@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Container,
   Box,
@@ -11,6 +11,7 @@ import {
   Tabs,
   Tab,
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 interface TabPanelProps {
@@ -35,7 +36,8 @@ function TabPanel(props: TabPanelProps) {
 }
 
 export default function Login() {
-  const { login, register } = useAuth();
+  const { login, register, loginSuccess, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [tabValue, setTabValue] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -46,6 +48,13 @@ export default function Login() {
     password: '',
     full_name: '',
   });
+
+  // Redirect to dashboard after successful login
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -15,6 +15,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   register: (data: RegisterData) => Promise<void>;
+  loginSuccess: boolean;
 }
 
 interface RegisterData {
@@ -29,6 +30,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loginSuccess, setLoginSuccess] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -53,6 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { access_token, user } = response.data;
     localStorage.setItem('token', access_token);
     setUser(user);
+    setLoginSuccess(true);
   };
 
   const register = async (data: RegisterData) => {
@@ -74,6 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         login,
         logout,
         register,
+        loginSuccess,
       }}
     >
       {children}

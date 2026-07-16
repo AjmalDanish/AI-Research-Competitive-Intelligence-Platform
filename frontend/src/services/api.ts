@@ -72,7 +72,17 @@ export const alertsAPI = {
 export const reportsAPI = {
   list: () => api.get('/reports'),
   generate: (data: any) => api.post('/reports/generate', data),
-  download: (id: string) => api.get(`/reports/${id}/download`, { responseType: 'blob' }),
+  download: (id: string) => {
+    const token = localStorage.getItem('token');
+    return axios.get(`${API_BASE_URL}/api/v1/reports/${id}/download`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+      responseType: 'blob',
+    });
+  },
+  update: (id: string, data: any) => api.put(`/reports/${id}`, data),
+  delete: (id: string) => api.delete(`/reports/${id}`),
 };
 
 export const analyticsAPI = {

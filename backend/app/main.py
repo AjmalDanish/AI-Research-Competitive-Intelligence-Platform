@@ -6,7 +6,7 @@ necessary middleware, routes, and dependencies.
 """
 
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -82,6 +82,22 @@ try:
     app.mount("/static", StaticFiles(directory="static"), name="static")
 except Exception:
     logger.warning("Static files directory not found")
+
+# Add direct routes for documentation convenience
+@app.get("/docs", include_in_schema=False)
+async def redirect_to_docs():
+    """Redirect to API documentation."""
+    return RedirectResponse(url=f"{settings.API_V1_STR}/docs")
+
+@app.get("/redoc", include_in_schema=False)
+async def redirect_to_redoc():
+    """Redirect to ReDoc documentation."""
+    return RedirectResponse(url=f"{settings.API_V1_STR}/redoc")
+
+@app.get("/openapi.json", include_in_schema=False)
+async def redirect_to_openapi():
+    """Redirect to OpenAPI schema."""
+    return RedirectResponse(url=f"{settings.API_V1_STR}/openapi.json")
 
 
 @app.get("/")

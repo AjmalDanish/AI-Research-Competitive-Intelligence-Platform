@@ -155,16 +155,32 @@ export default function Reports() {
   const handleDownload = async (id: string) => {
     try {
       const response = await reportsAPI.download(id);
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      
+      // Get filename from Content-Disposition header or use default
+      let filename = `report-${id}.pdf`;
+      const contentDisposition = response.headers['content-disposition'];
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename="?([^"\s]+)"?/);
+        if (filenameMatch) {
+          filename = filenameMatch[1];
+        }
+      }
+      
+      // Create blob and download
+      const blob = new Blob([response.data], {
+        type: response.headers['content-type'] || 'application/octet-stream'
+      });
+      const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `report-${id}.pdf`);
+      link.setAttribute('download', filename);
       document.body.appendChild(link);
       link.click();
       link.remove();
+      window.URL.revokeObjectURL(url);
     } catch (err: any) {
-      setError('Failed to download report');
-      console.error(err);
+      setError(`Failed to download report: ${err.response?.data?.detail || err.message}`);
+      console.error('Download error:', err);
     }
   };
 
