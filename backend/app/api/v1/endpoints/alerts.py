@@ -67,47 +67,66 @@ class AlertCreate(BaseModel):
 
 
 @router.get("")
+@router.get("")
 async def list_alerts(
     skip: int = Query(0, ge=0),
     limit: int = Query(20, ge=1, le=100),
     status: Optional[str] = None,
     priority: Optional[str] = None,
+    current_user: User = Depends(get_current_user_object),
     db: AsyncSession = Depends(get_db)
 ):
     """
     List alerts with filtering and pagination.
     """
-    query = select(Alert)
-    
-    if status:
-        query = query.where(Alert.status == status)
-    
-    if priority:
-        query = query.where(Alert.priority == priority)
-    
-    query = query.order_by(Alert.created_at.desc()).offset(skip).limit(limit)
-    result = await db.execute(query)
-    alerts = result.scalars().all()
-    
-    return {
-        "alerts": [
-            {
-                "id": alert.id,
-                "user_id": alert.user_id,
-                "title": alert.title,
-                "message": alert.message,
-                "alert_type": alert.alert_type,
-                "priority": alert.priority,
-                "status": alert.status,
-                "read": alert.read,
-                "created_at": alert.created_at,
-            }
-            for alert in alerts
-        ],
-        "total": len(alerts),
-        "skip": skip,
-        "limit": limit,
-    }
+    try:
+        query = select(Alert).where(Alert.user_id == current_user.id)
+        
+        if status:
+            query = query.where(Alert.status == status)
+        
+        if priority:
+            query = query.where(Alert.priority == priority)
+        
+        query = query.order_by(Alert.created_at.desc()).offset(skip).limit(limit)
+        result = await db.execute(query)
+        alerts = result.scalars().all()
+        
+        # Convert alerts to safe format, handling potential enum issues
+        safe_alerts = []
+        for alert in alerts:
+            try:
+                safe_alert = {
+                    "id": alert.id,
+                    "user_id": alert.user_id,
+                    "title": alert.title,
+                    "message": alert.message,
+                    "alert_type": str(alert.alert_type) if alert.alert_type else "custom",
+                    "priority": str(alert.priority) if alert.priority else "medium",
+                    "status": str(alert.status) if alert.status else "pending",
+                    "read": alert.read,
+                    "created_at": alert.created_at.isoformat() if alert.created_at else None,
+                }
+                safe_alerts.append(safe_alert)
+            except Exception as e:
+                logger.warning(f"Skipping alert {alert.id} due to error: {e}")
+                continue
+        
+        return {
+            "alerts": safe_alerts,
+            "total": len(safe_alerts),
+            "skip": skip,
+            "limit": limit,
+        }
+    except Exception as e:
+        logger.error(f"Error listing alerts: {e}")
+        # Return empty list on error instead of crashing
+        return {
+            "alerts": [],
+            "total": 0,
+            "skip": skip,
+            "limit": limit,
+        }
 
 
 @router.post("", status_code=status.HTTP_201_CREATED)

@@ -19,13 +19,44 @@ from app.core.security import (
     create_refresh_token,
     verify_token,
     get_current_user_dependency,
+    get_current_user,
 )
 from app.models.user import User
 from app.schemas.common import MessageResponse
 from app.core.logging import get_logger
+from sqlalchemy import select
 
 router = APIRouter()
 logger = get_logger(__name__)
+
+
+async def get_current_user_object(
+    user_id: str = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+) -> User:
+    """
+    Get current user object from JWT token.
+    
+    Args:
+        user_id: Current user ID from JWT token
+        db: Database session
+        
+    Returns:
+        User: Current user object
+        
+    Raises:
+        HTTPException: If user not found
+    """
+    result = await db.execute(select(User).where(User.id == int(user_id)))
+    user = result.scalar_one_or_none()
+    
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    return user
 
 
 # Request/Response schemas for JSON API
@@ -291,7 +322,7 @@ async def refresh_token(
 
 
 @router.get("/me")
-async def get_me(current_user: User = Depends(get_current_user)):
+async def get_me(current_user: User = Depends(get_current_user_object)):
     """
     Get current user information.
     """
@@ -308,7 +339,7 @@ async def get_me(current_user: User = Depends(get_current_user)):
 
 
 @router.post("/logout")
-async def logout(current_user: User = Depends(get_current_user)):
+async def logout(current_user: User = Depends(get_current_user_object)):
     """
     Logout current user.
     

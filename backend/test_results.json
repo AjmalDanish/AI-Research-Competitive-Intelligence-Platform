@@ -1,0 +1,71 @@
+{
+  "timestamp": "2026-07-17T22:06:06.082067",
+  "total_tests": 9,
+  "passed_tests": 9,
+  "failed_tests": 0,
+  "results": [
+    {
+      "test_name": "API Health Check",
+      "passed": true,
+      "message": "Status: healthy, Environment: development",
+      "duration": 2.095371961593628,
+      "timestamp": "2026-07-17T22:05:36.618045"
+    },
+    {
+      "test_name": "Authentication Login",
+      "passed": true,
+      "message": "User logged in: test@example.com",
+      "duration": 2.345191478729248,
+      "timestamp": "2026-07-17T22:05:38.963388"
+    },
+    {
+      "test_name": "Get Current User",
+      "passed": true,
+      "message": "User: test@example.com",
+      "duration": 2.030386209487915,
+      "timestamp": "2026-07-17T22:05:40.993905"
+    },
+    {
+      "test_name": "Competitors List",
+      "passed": true,
+      "message": "Found 1 competitors",
+      "duration": 2.0663530826568604,
+      "timestamp": "2026-07-17T22:05:43.060431"
+    },
+    {
+      "test_name": "Alerts CRUD",
+      "passed": true,
+      "message": "Create, Read, Update, Delete operations successful",
+      "duration": 8.486364603042603,
+      "timestamp": "2026-07-17T22:05:51.546939"
+    },
+    {
+      "test_name": "Reports Generation",
+      "passed": true,
+      "message": "Report generated and downloaded: 1014 bytes",
+      "duration": 4.242288112640381,
+      "timestamp": "2026-07-17T22:05:55.789742"
+    },
+    {
+      "test_name": "Market Trends",
+      "passed": true,
+      "message": "Found 0 market trends",
+      "duration": 2.0570735931396484,
+      "timestamp": "2026-07-17T22:05:57.847063"
+    },
+    {
+      "test_name": "API Documentation",
+      "passed": true,
+      "message": "Documentation endpoints accessible",
+      "duration": 4.1513683795928955,
+      "timestamp": "2026-07-17T22:06:01.998532"
+    },
+    {
+      "test_name": "Error Handling",
+      "passed": true,
+      "message": "Proper error responses for invalid requests",
+      "duration": 4.082956075668335,
+      "timestamp": "2026-07-17T22:06:06.081715"
+    }
+  ]
+}
