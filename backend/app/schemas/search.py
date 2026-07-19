@@ -9,6 +9,7 @@ from datetime import datetime
 
 class SearchQuery(BaseModel):
     """Schema for search query."""
+
     query: str = Field(..., min_length=1, max_length=500)
     filters: Optional[Dict[str, Any]] = None
     sort_by: Optional[str] = None
@@ -19,6 +20,7 @@ class SearchQuery(BaseModel):
 
 class SearchResultItem(BaseModel):
     """Schema for individual search result."""
+
     id: str
     type: str
     title: str
@@ -30,6 +32,7 @@ class SearchResultItem(BaseModel):
 
 class SearchResponse(BaseModel):
     """Schema for search response."""
+
     query: str
     results: List[SearchResultItem]
     total: int
@@ -40,6 +43,7 @@ class SearchResponse(BaseModel):
 
 class SavedSearchBase(BaseModel):
     """Base saved search schema."""
+
     name: str = Field(..., min_length=1, max_length=255)
     query: str = Field(..., min_length=1, max_length=2000)
     filters: Optional[Dict[str, Any]] = None
@@ -47,11 +51,13 @@ class SavedSearchBase(BaseModel):
 
 class SavedSearchCreate(SavedSearchBase):
     """Schema for creating a saved search."""
+
     pass
 
 
 class SavedSearchUpdate(BaseModel):
     """Schema for updating a saved search."""
+
     name: Optional[str] = Field(None, min_length=1, max_length=255)
     query: Optional[str] = Field(None, min_length=1, max_length=2000)
     filters: Optional[Dict[str, Any]] = None
@@ -60,6 +66,7 @@ class SavedSearchUpdate(BaseModel):
 
 class SavedSearchInDB(SavedSearchBase):
     """Schema for saved search in database."""
+
     id: str
     user_id: str
     is_active: bool = True
@@ -73,4 +80,5 @@ class SavedSearchInDB(SavedSearchBase):
 
 class SavedSearchResponse(SavedSearchInDB):
     """Schema for saved search response."""
+
     pass

@@ -44,7 +44,6 @@ __all__ = [
     "APIScraper",
     "ScrapingOrchestrator",
     "create_scraper",
-    
     # Data pipeline
     "PipelineStatus",
     "PipelineResult",
@@ -53,7 +52,6 @@ __all__ = [
     "DataPipeline",
     "pipeline",
     "get_pipeline",
-    
     # Analytics service
     "InsightType",
     "RiskLevel",

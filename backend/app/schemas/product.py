@@ -9,6 +9,7 @@ from datetime import datetime
 
 class ProductBase(BaseModel):
     """Base product schema."""
+
     name: str = Field(..., min_length=1, max_length=255)
     description: Optional[str] = Field(None, max_length=2000)
     category: str = Field(..., min_length=1, max_length=100)
@@ -18,11 +19,13 @@ class ProductBase(BaseModel):
 
 class ProductCreate(ProductBase):
     """Schema for creating a product."""
+
     pass
 
 
 class ProductUpdate(BaseModel):
     """Schema for updating a product."""
+
     name: Optional[str] = Field(None, min_length=1, max_length=255)
     description: Optional[str] = Field(None, max_length=2000)
     category: Optional[str] = Field(None, min_length=1, max_length=100)
@@ -32,6 +35,7 @@ class ProductUpdate(BaseModel):
 
 class ProductInDB(ProductBase):
     """Schema for product in database."""
+
     id: str
     competitor_id: Optional[str] = None
     created_at: datetime
@@ -43,11 +47,13 @@ class ProductInDB(ProductBase):
 
 class ProductResponse(ProductInDB):
     """Schema for product response."""
+
     pass
 
 
 class ProductListResponse(BaseModel):
     """Schema for product list response."""
+
     items: List[ProductResponse]
     total: int
     page: int

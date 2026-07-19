@@ -13,7 +13,7 @@ from app.models.alert import Alert
 async def create_sample_data():
     """Create sample data for testing."""
     now = datetime.now(timezone.utc)
-    
+
     async with AsyncSessionLocal() as session:
         # Create sample competitor
         competitor = Competitor(
@@ -31,13 +31,13 @@ async def create_sample_data():
             status="active",
             twitter_handle="@techcorp",
             linkedin_url="https://linkedin.com/company/techcorp",
-            meta_data={"key_competitor": True, "market_leader": True}
+            meta_data={"key_competitor": True, "market_leader": True},
         )
-        
+
         session.add(competitor)
         await session.flush()
         await session.refresh(competitor)
-        
+
         # Create sample activities
         activities = [
             CompetitorActivity(
@@ -53,7 +53,7 @@ async def create_sample_data():
                 market_impact="Significant impact on enterprise analytics market",
                 processed=True,
                 verified=True,
-                meta_data={"importance": "high"}
+                meta_data={"importance": "high"},
             ),
             CompetitorActivity(
                 competitor_id=competitor.id,
@@ -68,13 +68,13 @@ async def create_sample_data():
                 market_impact="Expands cloud service offerings",
                 processed=True,
                 verified=True,
-                meta_data={"partnership_type": "strategic"}
-            )
+                meta_data={"partnership_type": "strategic"},
+            ),
         ]
-        
+
         for activity in activities:
             session.add(activity)
-        
+
         # Create sample products
         products = [
             CompetitorProduct(
@@ -86,7 +86,7 @@ async def create_sample_data():
                 pricing_model="subscription",
                 launch_date=now - timedelta(days=365),
                 status="active",
-                meta_data={"flagship": True, "tier": "enterprise"}
+                meta_data={"flagship": True, "tier": "enterprise"},
             ),
             CompetitorProduct(
                 competitor_id=competitor.id,
@@ -97,13 +97,13 @@ async def create_sample_data():
                 pricing_model="subscription",
                 launch_date=now - timedelta(days=180),
                 status="active",
-                meta_data={"flagship": True, "tier": "enterprise"}
-            )
+                meta_data={"flagship": True, "tier": "enterprise"},
+            ),
         ]
-        
+
         for product in products:
             session.add(product)
-        
+
         # Create sample news
         news_items = [
             CompetitorNews(
@@ -120,7 +120,7 @@ async def create_sample_data():
                 relevance_score=0.9,
                 keywords=["revenue", "earnings", "Q4", "growth"],
                 processed=True,
-                meta_data={"quarter": "Q4", "fiscal_year": 2024}
+                meta_data={"quarter": "Q4", "fiscal_year": 2024},
             ),
             CompetitorNews(
                 competitor_id=competitor.id,
@@ -136,13 +136,13 @@ async def create_sample_data():
                 relevance_score=0.85,
                 keywords=["acquisition", "AI", "startup", "M&A"],
                 processed=True,
-                meta_data={"deal_value": 500000000, "acquisition_type": "AI"}
-            )
+                meta_data={"deal_value": 500000000, "acquisition_type": "AI"},
+            ),
         ]
-        
+
         for news_item in news_items:
             session.add(news_item)
-        
+
         # Create sample market trends
         trends = [
             MarketTrend(
@@ -164,11 +164,13 @@ async def create_sample_data():
                 confidence_level="high",
                 impact_assessment="Significant market growth expected",
                 sources=["Gartner", "Forrester", "IDC"],
-                data_points=[{"date": (now - timedelta(days=90)).isoformat(), "value": 100},
-                          {"date": (now - timedelta(days=30)).isoformat(), "value": 135}],
+                data_points=[
+                    {"date": (now - timedelta(days=90)).isoformat(), "value": 100},
+                    {"date": (now - timedelta(days=30)).isoformat(), "value": 135},
+                ],
                 verified=True,
                 status="active",
-                meta_data={"growth_rate": 0.35, "market_size": 15000000000}
+                meta_data={"growth_rate": 0.35, "market_size": 15000000000},
             ),
             MarketTrend(
                 name="Cloud Migration Acceleration",
@@ -189,11 +191,13 @@ async def create_sample_data():
                 confidence_level="high",
                 impact_assessment="Major market shift in progress",
                 sources=["McKinsey", "Deloitte", "Accenture"],
-                data_points=[{"date": (now - timedelta(days=120)).isoformat(), "value": 100},
-                          {"date": (now - timedelta(days=45)).isoformat(), "value": 145}],
+                data_points=[
+                    {"date": (now - timedelta(days=120)).isoformat(), "value": 100},
+                    {"date": (now - timedelta(days=45)).isoformat(), "value": 145},
+                ],
                 verified=True,
                 status="active",
-                meta_data={"growth_rate": 0.45, "market_size": 35000000000}
+                meta_data={"growth_rate": 0.45, "market_size": 35000000000},
             ),
             MarketTrend(
                 name="Data Privacy Regulations",
@@ -214,17 +218,19 @@ async def create_sample_data():
                 confidence_level="medium",
                 impact_assessment="Regulatory compliance costs increasing",
                 sources=["GDPR", "CCPA", "industry reports"],
-                data_points=[{"date": (now - timedelta(days=60)).isoformat(), "value": 100},
-                          {"date": now.isoformat(), "value": 125}],
+                data_points=[
+                    {"date": (now - timedelta(days=60)).isoformat(), "value": 100},
+                    {"date": now.isoformat(), "value": 125},
+                ],
                 verified=True,
                 status="active",
-                meta_data={"regulation_impact": "high", "compliance_costs": 0.25}
-            )
+                meta_data={"regulation_impact": "high", "compliance_costs": 0.25},
+            ),
         ]
-        
+
         for trend in trends:
             session.add(trend)
-        
+
         # Create sample alerts
         alerts = [
             Alert(
@@ -236,7 +242,7 @@ async def create_sample_data():
                 status="active",
                 is_read=False,
                 triggered_at=now - timedelta(hours=2),
-                meta_data={"competitor": "TechCorp", "price_change": -0.2}
+                meta_data={"competitor": "TechCorp", "price_change": -0.2},
             ),
             Alert(
                 user_id=1,
@@ -247,7 +253,7 @@ async def create_sample_data():
                 status="active",
                 is_read=False,
                 triggered_at=now - timedelta(hours=24),
-                meta_data={"competitor": "TechCorp", "product": "AI Platform"}
+                meta_data={"competitor": "TechCorp", "product": "AI Platform"},
             ),
             Alert(
                 user_id=1,
@@ -258,15 +264,15 @@ async def create_sample_data():
                 status="active",
                 is_read=True,
                 triggered_at=now - timedelta(days=3),
-                meta_data={"trend": "AI Adoption", "growth_rate": 0.35}
-            )
+                meta_data={"trend": "AI Adoption", "growth_rate": 0.35},
+            ),
         ]
-        
+
         for alert in alerts:
             session.add(alert)
-        
+
         await session.commit()
-        
+
         print("Sample data created successfully!")
         print(f"- Created {len(activities)} competitor activities")
         print(f"- Created {len(products)} competitor products")

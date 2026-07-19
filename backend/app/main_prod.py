@@ -20,13 +20,18 @@ import os
 from app.core.config import settings
 from app.core.logging import setup_logging
 from app.core.security_middleware import (
-    security_config, security_middleware, token_manager,
-    SecurityHeaders
+    security_config,
+    security_middleware,
+    token_manager,
+    SecurityHeaders,
 )
 from app.core.cors import configure_cors, CORSConfig
 from app.core.rate_limiting import (
-    RateLimiter, rate_limit, global_rate_limiter,
-    initialize_rate_limiter, close_rate_limiter
+    RateLimiter,
+    rate_limit,
+    global_rate_limiter,
+    initialize_rate_limiter,
+    close_rate_limiter,
 )
 from app.api.v1.api import api_router
 from app.db.session import engine
@@ -49,12 +54,12 @@ async def lifespan(app: FastAPI):
     """Application lifespan manager."""
     # Startup
     logger.info(f"Starting {settings.APP_NAME} v{settings.APP_VERSION}")
-    
+
     # Initialize rate limiter
     if settings.RATE_LIMIT_ENABLED:
         await initialize_rate_limiter()
         logger.info("Rate limiter initialized")
-    
+
     # Initialize database
     try:
         async with engine.begin() as conn:
@@ -63,17 +68,17 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.error(f"Database connection failed: {e}")
         raise
-    
+
     yield
-    
+
     # Shutdown
     logger.info("Shutting down application")
-    
+
     # Close rate limiter
     if settings.RATE_LIMIT_ENABLED:
         await close_rate_limiter()
         logger.info("Rate limiter closed")
-    
+
     # Close database connections
     await engine.dispose()
     logger.info("Database connections closed")
@@ -110,7 +115,7 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 if settings.ENVIRONMENT == "production":
     app.add_middleware(
         TrustedHostMiddleware,
-        allowed_hosts=settings.CORS_ORIGINS if "*" not in settings.CORS_ORIGINS else ["*"]
+        allowed_hosts=settings.CORS_ORIGINS if "*" not in settings.CORS_ORIGINS else ["*"],
     )
 
 
@@ -120,31 +125,31 @@ async def security_middleware_handler(request: Request, call_next):
     try:
         # Validate request
         await security_middleware.validate_request(request)
-        
+
         # Process request
         response = await call_next(request)
-        
+
         # Add security headers
         security_headers = SecurityHeaders.get_headers()
         for header_name, header_value in security_headers.items():
             response.headers[header_name] = header_value
-        
+
         # Add custom headers
         response.headers["X-API-Version"] = settings.APP_VERSION
         response.headers["X-Request-ID"] = request.headers.get("X-Request-ID", "")
-        
+
         # Security headers
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["X-XSS-Protection"] = "1; mode=block"
-        
+
         return response
-        
+
     except Exception as e:
         logger.error(f"Security middleware error: {e}")
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            content={"detail": "Internal server error"}
+            content={"detail": "Internal server error"},
         )
 
 
@@ -152,29 +157,29 @@ async def security_middleware_handler(request: Request, call_next):
 async def request_logging_middleware(request: Request, call_next):
     """Request logging middleware."""
     start_time = datetime.utcnow()
-    
+
     # Log request
     logger.info(
         f"Request: {request.method} {request.url.path} "
         f"from {request.client.host if request.client else 'unknown'}"
     )
-    
+
     # Process request
     response = await call_next(request)
-    
+
     # Calculate duration
     duration = (datetime.utcnow() - start_time).total_seconds()
-    
+
     # Log response
     logger.info(
         f"Response: {response.status_code} "
         f"duration: {duration:.3f}s "
         f"for {request.method} {request.url.path}"
     )
-    
+
     # Add duration header
     response.headers["X-Response-Time"] = f"{duration:.3f}"
-    
+
     return response
 
 
@@ -188,8 +193,8 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         content={
             "detail": "Validation error",
             "errors": exc.errors(),
-            "request_id": request.headers.get("X-Request-ID", "")
-        }
+            "request_id": request.headers.get("X-Request-ID", ""),
+        },
     )
 
 
@@ -197,19 +202,16 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 async def global_exception_handler(request: Request, exc: Exception):
     """Handle global exceptions."""
     logger.error(f"Unhandled exception: {exc}", exc_info=True)
-    
+
     # Don't expose internal errors in production
     if settings.ENVIRONMENT == "production":
         detail = "Internal server error"
     else:
         detail = str(exc)
-    
+
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content={
-            "detail": detail,
-            "request_id": request.headers.get("X-Request-ID", "")
-        }
+        content={"detail": detail, "request_id": request.headers.get("X-Request-ID", "")},
     )
 
 
@@ -226,7 +228,7 @@ async def root(request: Request):
         "message": f"Welcome to {settings.APP_NAME}",
         "version": settings.APP_VERSION,
         "status": "operational",
-        "docs": settings.API_DOCS_URL if settings.API_DOCS_ENABLED else None
+        "docs": settings.API_DOCS_URL if settings.API_DOCS_ENABLED else None,
     }
 
 
@@ -239,13 +241,9 @@ async def health_check():
         "timestamp": datetime.utcnow().isoformat(),
         "version": settings.APP_VERSION,
         "environment": settings.ENVIRONMENT,
-        "services": {
-            "api": "healthy",
-            "database": "checking...",
-            "redis": "checking..."
-        }
+        "services": {"api": "healthy", "database": "checking...", "redis": "checking..."},
     }
-    
+
     # Check database
     try:
         async with engine.begin() as conn:
@@ -254,7 +252,7 @@ async def health_check():
     except Exception as e:
         health_status["services"]["database"] = f"unhealthy: {str(e)}"
         health_status["status"] = "degraded"
-    
+
     # Check Redis (if configured)
     if settings.REDIS_URL:
         try:
@@ -263,7 +261,7 @@ async def health_check():
         except Exception as e:
             health_status["services"]["redis"] = f"unhealthy: {str(e)}"
             health_status["status"] = "degraded"
-    
+
     # Return appropriate status code
     status_code = 200 if health_status["status"] == "healthy" else 503
     return JSONResponse(content=health_status, status_code=status_code)
@@ -277,13 +275,13 @@ async def metrics():
     return {
         "status": "metrics available",
         "endpoints": len(api_router.routes),
-        "version": settings.APP_VERSION
+        "version": settings.APP_VERSION,
     }
 
 
 if __name__ == "__main__":
     import uvicorn
-    
+
     uvicorn.run(
         "app.main:app",
         host="0.0.0.0",

@@ -9,6 +9,7 @@ from datetime import datetime
 
 class CompetitorBase(BaseModel):
     """Base competitor schema."""
+
     name: str = Field(..., min_length=1, max_length=255)
     website: HttpUrl
     industry: str = Field(..., min_length=1, max_length=100)
@@ -22,11 +23,13 @@ class CompetitorBase(BaseModel):
 
 class CompetitorCreate(CompetitorBase):
     """Schema for creating a competitor."""
+
     pass
 
 
 class CompetitorUpdate(BaseModel):
     """Schema for updating a competitor."""
+
     name: Optional[str] = Field(None, min_length=1, max_length=255)
     website: Optional[HttpUrl] = None
     industry: Optional[str] = Field(None, min_length=1, max_length=100)
@@ -40,6 +43,7 @@ class CompetitorUpdate(BaseModel):
 
 class CompetitorInDB(CompetitorBase):
     """Schema for competitor in database."""
+
     id: str
     created_at: datetime
     updated_at: datetime
@@ -50,11 +54,13 @@ class CompetitorInDB(CompetitorBase):
 
 class CompetitorResponse(CompetitorInDB):
     """Schema for competitor response."""
+
     pass
 
 
 class CompetitorListResponse(BaseModel):
     """Schema for competitor list response."""
+
     items: List[CompetitorResponse]
     total: int
     page: int

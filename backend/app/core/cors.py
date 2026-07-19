@@ -10,7 +10,7 @@ import os
 
 class CORSConfig:
     """CORS configuration settings."""
-    
+
     ORIGINS: List[str] = os.getenv("CORS_ORIGINS", "*").split(",")
     ALLOW_CREDENTIALS: bool = os.getenv("CORS_ALLOW_CREDENTIALS", "true").lower() == "true"
     ALLOW_METHODS: List[str] = ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"]
@@ -22,17 +22,17 @@ class CORSConfig:
 def configure_cors(app: FastAPI, config: Optional[CORSConfig] = None) -> None:
     """
     Configure CORS for FastAPI application.
-    
+
     Args:
         app: FastAPI application instance
         config: CORS configuration (uses default if not provided)
     """
     if config is None:
         config = CORSConfig()
-    
+
     # Handle wildcard origins
     allow_origins = config.ORIGINS if "*" not in config.ORIGINS else ["*"]
-    
+
     app.add_middleware(
         CORSMiddleware,
         allow_origins=allow_origins,

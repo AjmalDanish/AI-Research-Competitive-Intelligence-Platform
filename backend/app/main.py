@@ -29,20 +29,20 @@ logger = setup_logging(__name__)
 async def lifespan(app: FastAPI):
     """
     Application lifespan manager.
-    
+
     Handles startup and shutdown events for the application.
     """
     # Startup
     logger.info("Starting AI Research Competitive Intelligence Platform")
-    
+
     # Create database tables
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-    
+
     logger.info("Database tables created successfully")
-    
+
     yield
-    
+
     # Shutdown
     logger.info("Shutting down AI Research Competitive Intelligence Platform")
     await engine.dispose()
@@ -84,16 +84,19 @@ try:
 except Exception:
     logger.warning("Static files directory not found")
 
+
 # Add direct routes for documentation convenience
 @app.get("/docs", include_in_schema=False)
 async def redirect_to_docs():
     """Redirect to API documentation."""
     return RedirectResponse(url=f"{settings.API_V1_STR}/docs")
 
+
 @app.get("/redoc", include_in_schema=False)
 async def redirect_to_redoc():
     """Redirect to ReDoc documentation."""
     return RedirectResponse(url=f"{settings.API_V1_STR}/redoc")
+
 
 @app.get("/openapi.json", include_in_schema=False)
 async def redirect_to_openapi():
@@ -105,7 +108,7 @@ async def redirect_to_openapi():
 async def root():
     """
     Root endpoint.
-    
+
     Returns basic information about the API.
     """
     return {
@@ -120,7 +123,7 @@ async def root():
 async def health_check():
     """
     Health check endpoint.
-    
+
     Returns the health status of the application.
     """
     return {
@@ -144,7 +147,7 @@ async def shutdown_event():
 
 if __name__ == "__main__":
     import uvicorn
-    
+
     uvicorn.run(
         "app.main:app",
         host="0.0.0.0",

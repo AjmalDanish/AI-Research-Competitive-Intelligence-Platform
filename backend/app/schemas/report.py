@@ -9,6 +9,7 @@ from datetime import datetime
 
 class ReportBase(BaseModel):
     """Base report schema."""
+
     title: str = Field(..., min_length=1, max_length=255)
     description: Optional[str] = Field(None, max_length=2000)
     report_type: str = Field(..., pattern="^(competitor|market|analytics|custom)$")
@@ -18,11 +19,13 @@ class ReportBase(BaseModel):
 
 class ReportCreate(ReportBase):
     """Schema for creating a report."""
+
     pass
 
 
 class ReportUpdate(BaseModel):
     """Schema for updating a report."""
+
     title: Optional[str] = Field(None, min_length=1, max_length=255)
     description: Optional[str] = Field(None, max_length=2000)
     report_type: Optional[str] = Field(None, pattern="^(competitor|market|analytics|custom)$")
@@ -32,6 +35,7 @@ class ReportUpdate(BaseModel):
 
 class ReportInDB(ReportBase):
     """Schema for report in database."""
+
     id: str
     user_id: str
     status: str = "generating"
@@ -47,11 +51,13 @@ class ReportInDB(ReportBase):
 
 class ReportResponse(ReportInDB):
     """Schema for report response."""
+
     pass
 
 
 class ReportListResponse(BaseModel):
     """Schema for report list response."""
+
     items: List[ReportResponse]
     total: int
     page: int

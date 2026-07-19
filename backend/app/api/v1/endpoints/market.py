@@ -21,23 +21,23 @@ async def list_trends(
     limit: int = Query(20, ge=1, le=100),
     industry: Optional[str] = None,
     status: Optional[str] = None,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
 ):
     """
     List market trends with filtering and pagination.
     """
     query = select(MarketTrend)
-    
+
     if industry:
         query = query.where(MarketTrend.industry == industry)
-    
+
     if status:
         query = query.where(MarketTrend.status == status)
-    
+
     query = query.order_by(MarketTrend.detected_date.desc()).offset(skip).limit(limit)
     result = await db.execute(query)
     trends = result.scalars().all()
-    
+
     return {
         "trends": [
             {
@@ -66,23 +66,23 @@ async def list_intelligence(
     limit: int = Query(20, ge=1, le=100),
     industry: Optional[str] = None,
     category: Optional[str] = None,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
 ):
     """
     List market intelligence with filtering and pagination.
     """
     query = select(MarketIntelligence)
-    
+
     if industry:
         query = query.where(MarketIntelligence.industry == industry)
-    
+
     if category:
         query = query.where(MarketIntelligence.category == category)
-    
+
     query = query.order_by(MarketIntelligence.collected_date.desc()).offset(skip).limit(limit)
     result = await db.execute(query)
     intelligence_items = result.scalars().all()
-    
+
     return {
         "intelligence": [
             {
@@ -112,7 +112,7 @@ async def create_trend(
     description: Optional[str] = None,
     category: Optional[str] = None,
     industry: Optional[str] = None,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
 ):
     """
     Create a new market trend.
@@ -124,13 +124,13 @@ async def create_trend(
         industry=industry,
         status="active",
     )
-    
+
     db.add(trend)
     await db.commit()
     await db.refresh(trend)
-    
+
     logger.info(f"New trend created: {trend.name}")
-    
+
     return {
         "id": trend.id,
         "message": "Trend created successfully",
@@ -138,24 +138,16 @@ async def create_trend(
 
 
 @router.get("/trends/{trend_id}")
-async def get_trend(
-    trend_id: int,
-    db: AsyncSession = Depends(get_db)
-):
+async def get_trend(trend_id: int, db: AsyncSession = Depends(get_db)):
     """
     Get trend by ID with full details.
     """
-    result = await db.execute(
-        select(MarketTrend).where(MarketTrend.id == trend_id)
-    )
+    result = await db.execute(select(MarketTrend).where(MarketTrend.id == trend_id))
     trend = result.scalar_one_or_none()
-    
+
     if not trend:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Trend not found"
-        )
-    
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Trend not found")
+
     return {
         "id": trend.id,
         "name": trend.name,

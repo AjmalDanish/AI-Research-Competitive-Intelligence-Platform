@@ -182,9 +182,7 @@ class RobotsChecker:
 
                 # If robots.txt fetch failed, allow all (conservative approach)
                 if response.status_code >= 500:
-                    logger.warning(
-                        f"Failed to fetch robots.txt for {domain}, allowing all"
-                    )
+                    logger.warning(f"Failed to fetch robots.txt for {domain}, allowing all")
                     return []
 
                 # Parse robots.txt

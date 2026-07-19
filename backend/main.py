@@ -36,7 +36,7 @@ app = create_app()
 async def root() -> RedirectResponse:
     """
     Root endpoint redirects to API documentation.
-    
+
     Returns:
         RedirectResponse: Redirects to /docs
     """
@@ -49,7 +49,7 @@ async def root() -> RedirectResponse:
 
 if __name__ == "__main__":
     import uvicorn
-    
+
     uvicorn.run(
         "backend.main:app",
         host=settings.HOST,

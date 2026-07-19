@@ -20,7 +20,7 @@ logger = get_logger(__name__)
 async def health_check():
     """
     Basic health check endpoint.
-    
+
     Returns the overall health status of the API.
     """
     return HealthResponse(
@@ -28,7 +28,7 @@ async def health_check():
         version=settings.VERSION,
         environment=settings.ENVIRONMENT,
         timestamp=datetime.utcnow(),
-        services={}
+        services={},
     )
 
 
@@ -36,13 +36,13 @@ async def health_check():
 async def detailed_health_check(db: AsyncSession = Depends(get_db)):
     """
     Detailed health check with service status.
-    
+
     Checks database connection and other service dependencies.
     """
     services = {
         "api": {"status": "healthy", "timestamp": datetime.utcnow().isoformat()},
     }
-    
+
     # Check database connection
     try:
         db_healthy = await check_db_connection()
@@ -57,20 +57,20 @@ async def detailed_health_check(db: AsyncSession = Depends(get_db)):
             "error": str(e),
             "timestamp": datetime.utcnow().isoformat(),
         }
-    
+
     # Check Redis (if configured)
     # This would be implemented when Redis is integrated
-    
-    overall_status = "healthy" if all(
-        svc["status"] == "healthy" for svc in services.values()
-    ) else "degraded"
-    
+
+    overall_status = (
+        "healthy" if all(svc["status"] == "healthy" for svc in services.values()) else "degraded"
+    )
+
     return HealthResponse(
         status=overall_status,
         version=settings.VERSION,
         environment=settings.ENVIRONMENT,
         timestamp=datetime.utcnow(),
-        services=services
+        services=services,
     )
 
 
@@ -78,7 +78,7 @@ async def detailed_health_check(db: AsyncSession = Depends(get_db)):
 async def readiness_check(db: AsyncSession = Depends(get_db)):
     """
     Readiness check for Kubernetes/container orchestration.
-    
+
     Returns 200 if the service is ready to accept traffic.
     """
     try:
@@ -94,7 +94,7 @@ async def readiness_check(db: AsyncSession = Depends(get_db)):
 async def liveness_check():
     """
     Liveness check for Kubernetes/container orchestration.
-    
+
     Returns 200 if the service is alive.
     """
     return {"status": "alive"}
@@ -116,7 +116,7 @@ async def get_version():
 async def get_public_config():
     """
     Get public configuration information.
-    
+
     Returns non-sensitive configuration values.
     """
     return {
@@ -130,5 +130,5 @@ async def get_public_config():
             "market_intelligence": True,
             "alerts": True,
             "reports": True,
-        }
+        },
     }

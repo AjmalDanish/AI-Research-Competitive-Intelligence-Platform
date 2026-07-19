@@ -39,26 +39,24 @@ router = APIRouter()
 async def health_check() -> HealthResponse:
     """
     General health check endpoint.
-    
+
     Returns the overall health status of the system.
     This endpoint is suitable for load balancer health checks.
-    
+
     Returns:
         HealthResponse: System health information
     """
     checks = {}
-    
+
     # Check database health
     db_healthy = await check_database_health()
     checks["database"] = "healthy" if db_healthy else "unhealthy"
-    
+
     # Determine overall status
     overall_status = (
-        "healthy"
-        if all(check == "healthy" for check in checks.values())
-        else "unhealthy"
+        "healthy" if all(check == "healthy" for check in checks.values()) else "unhealthy"
     )
-    
+
     return HealthResponse(
         status=overall_status,
         version=settings.APP_VERSION,
@@ -77,28 +75,28 @@ async def health_check() -> HealthResponse:
 async def readiness_check(response: Response) -> HealthResponse:
     """
     Readiness probe endpoint.
-    
+
     Returns whether the system is ready to accept traffic.
     This endpoint is suitable for Kubernetes readiness probes.
-    
+
     Returns:
         HealthResponse: Readiness status
     """
     checks = {}
     overall_status = "healthy"
     http_status = status.HTTP_200_OK
-    
+
     # Check database health (required for readiness)
     db_healthy = await check_database_health()
     checks["database"] = "healthy" if db_healthy else "unhealthy"
-    
+
     if not db_healthy:
         overall_status = "unhealthy"
         http_status = status.HTTP_503_SERVICE_UNAVAILABLE
         logger.warning("Readiness check failed: database unhealthy")
-    
+
     response.status_code = http_status
-    
+
     return HealthResponse(
         status=overall_status,
         version=settings.APP_VERSION,
@@ -117,11 +115,11 @@ async def readiness_check(response: Response) -> HealthResponse:
 async def liveness_check() -> HealthResponse:
     """
     Liveness probe endpoint.
-    
+
     Returns whether the system is alive.
     This endpoint is suitable for Kubernetes liveness probes.
     A simple liveness check indicates the process is running.
-    
+
     Returns:
         HealthResponse: Liveness status
     """
@@ -144,18 +142,18 @@ async def liveness_check() -> HealthResponse:
 async def database_health_check(response: Response) -> HealthResponse:
     """
     Database health check endpoint.
-    
+
     Returns the health status of the database connection.
-    
+
     Returns:
         HealthResponse: Database health information
     """
     db_healthy = await check_database_health()
-    
+
     if not db_healthy:
         response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
         logger.error("Database health check failed")
-    
+
     return HealthResponse(
         status="healthy" if db_healthy else "unhealthy",
         version=settings.APP_VERSION,

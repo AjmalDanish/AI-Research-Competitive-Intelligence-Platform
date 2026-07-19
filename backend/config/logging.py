@@ -90,7 +90,9 @@ class TextFormatter(logging.Formatter):
 
     def __init__(self) -> None:
         """Initialize text formatter with custom format."""
-        format_str = "%(asctime)s | %(levelname)-8s | %(name)s:%(funcName)s:%(lineno)d | %(message)s"
+        format_str = (
+            "%(asctime)s | %(levelname)-8s | %(name)s:%(funcName)s:%(lineno)d | %(message)s"
+        )
         date_format = "%Y-%m-%d %H:%M:%S"
         super().__init__(format_str, datefmt=date_format)
 

@@ -19,10 +19,10 @@ Clean Architecture:
 class BaseApplicationException(Exception):
     """
     Base application exception.
-    
+
     All custom exceptions should inherit from this class.
     """
-    
+
     def __init__(
         self,
         message: str,
@@ -31,7 +31,7 @@ class BaseApplicationException(Exception):
     ):
         """
         Initialize base application exception.
-        
+
         Args:
             message: Human-readable error message
             detail: Detailed error information
@@ -46,10 +46,10 @@ class BaseApplicationException(Exception):
 class ValidationException(BaseApplicationException):
     """
     Validation exception.
-    
+
     Raised when input validation fails.
     """
-    
+
     def __init__(self, message: str, detail: str | None = None):
         """Initialize validation exception."""
         super().__init__(
@@ -62,10 +62,10 @@ class ValidationException(BaseApplicationException):
 class NotFoundException(BaseApplicationException):
     """
     Not found exception.
-    
+
     Raised when a resource is not found.
     """
-    
+
     def __init__(self, message: str, detail: str | None = None):
         """Initialize not found exception."""
         super().__init__(
@@ -78,10 +78,10 @@ class NotFoundException(BaseApplicationException):
 class ConflictException(BaseApplicationException):
     """
     Conflict exception.
-    
+
     Raised when a conflict with existing data occurs.
     """
-    
+
     def __init__(self, message: str, detail: str | None = None):
         """Initialize conflict exception."""
         super().__init__(
@@ -94,10 +94,10 @@ class ConflictException(BaseApplicationException):
 class DatabaseException(BaseApplicationException):
     """
     Database exception.
-    
+
     Raised when database operations fail.
     """
-    
+
     def __init__(self, message: str, detail: str | None = None):
         """Initialize database exception."""
         super().__init__(
@@ -110,10 +110,10 @@ class DatabaseException(BaseApplicationException):
 class ConfigurationException(BaseApplicationException):
     """
     Configuration exception.
-    
+
     Raised when configuration is invalid or missing.
     """
-    
+
     def __init__(self, message: str, detail: str | None = None):
         """Initialize configuration exception."""
         super().__init__(
@@ -126,10 +126,10 @@ class ConfigurationException(BaseApplicationException):
 class ExternalServiceException(BaseApplicationException):
     """
     External service exception.
-    
+
     Raised when external service calls fail.
     """
-    
+
     def __init__(self, message: str, detail: str | None = None):
         """Initialize external service exception."""
         super().__init__(

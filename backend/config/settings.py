@@ -63,9 +63,7 @@ class Settings(BaseSettings):
     PORT: int = Field(default=8000, description="API port")
 
     # ==================== Database ====================
-    DATABASE_NAME: str = Field(
-        default="ai_website_intelligence", description="Main database name"
-    )
+    DATABASE_NAME: str = Field(default="ai_website_intelligence", description="Main database name")
 
     TEST_DATABASE_NAME: str = Field(
         default="ai_website_intelligence_test", description="Test database name"
@@ -73,17 +71,13 @@ class Settings(BaseSettings):
 
     DATABASE_USER: str = Field(default="ai_user", description="Database user")
 
-    DATABASE_PASSWORD: str = Field(
-        default="ai_password", description="Database password"
-    )
+    DATABASE_PASSWORD: str = Field(default="ai_password", description="Database password")
 
     DATABASE_HOST: str = Field(default="localhost", description="Database host")
 
     DATABASE_PORT: int = Field(default=5432, description="Database port")
 
-    DATABASE_POOL_SIZE: int = Field(
-        default=10, description="Database connection pool size"
-    )
+    DATABASE_POOL_SIZE: int = Field(default=10, description="Database connection pool size")
 
     DATABASE_MAX_OVERFLOW: int = Field(
         default=20, description="Database maximum overflow connections"
@@ -133,13 +127,9 @@ class Settings(BaseSettings):
         default="INFO", description="Logging level"
     )
 
-    LOG_FORMAT: Literal["json", "text"] = Field(
-        default="json", description="Log format"
-    )
+    LOG_FORMAT: Literal["json", "text"] = Field(default="json", description="Log format")
 
-    LOG_FILE: str | None = Field(
-        default=None, description="Log file path (None for stdout only)"
-    )
+    LOG_FILE: str | None = Field(default=None, description="Log file path (None for stdout only)")
 
     LOG_ROTATION: str = Field(default="10 MB", description="Log rotation size")
 
@@ -148,9 +138,7 @@ class Settings(BaseSettings):
     # ==================== API ====================
     API_V1_PREFIX: str = Field(default="/api/v1", description="API v1 prefix")
 
-    API_TITLE: str = Field(
-        default="AI Website Intelligence Platform API", description="API title"
-    )
+    API_TITLE: str = Field(default="AI Website Intelligence Platform API", description="API title")
 
     API_DESCRIPTION: str = Field(
         default="API for analyzing websites and extracting business intelligence",
@@ -182,17 +170,13 @@ class Settings(BaseSettings):
         description="CORS allowed origins",
     )
 
-    CORS_ALLOW_CREDENTIALS: bool = Field(
-        default=True, description="CORS allow credentials"
-    )
+    CORS_ALLOW_CREDENTIALS: bool = Field(default=True, description="CORS allow credentials")
 
     CORS_ALLOW_METHODS: list[str] = Field(
         default=["GET", "POST", "OPTIONS"], description="CORS allowed methods"
     )
 
-    CORS_ALLOW_HEADERS: list[str] = Field(
-        default=["*"], description="CORS allowed headers"
-    )
+    CORS_ALLOW_HEADERS: list[str] = Field(default=["*"], description="CORS allowed headers")
 
     # ==================== Crawler Configuration ====================
     # User Agent
@@ -210,30 +194,22 @@ class Settings(BaseSettings):
         default=10, description="Robots.txt check timeout (seconds)"
     )
 
-    CRAWLER_TIMEOUT_CRAWL: int = Field(
-        default=30, description="Page crawl timeout (seconds)"
-    )
+    CRAWLER_TIMEOUT_CRAWL: int = Field(default=30, description="Page crawl timeout (seconds)")
 
     CRAWLER_TIMEOUT_OVERALL: int = Field(
         default=60, description="Overall operation timeout (seconds)"
     )
 
     # Retry Settings
-    CRAWLER_MAX_RETRIES: int = Field(
-        default=3, description="Maximum number of retry attempts"
-    )
+    CRAWLER_MAX_RETRIES: int = Field(default=3, description="Maximum number of retry attempts")
 
-    CRAWLER_RETRY_INITIAL_DELAY: int = Field(
-        default=1, description="Initial retry delay (seconds)"
-    )
+    CRAWLER_RETRY_INITIAL_DELAY: int = Field(default=1, description="Initial retry delay (seconds)")
 
     CRAWLER_RETRY_MULTIPLIER: float = Field(
         default=2.0, description="Retry delay multiplier for exponential backoff"
     )
 
-    CRAWLER_RETRY_MAX_DELAY: int = Field(
-        default=10, description="Maximum retry delay (seconds)"
-    )
+    CRAWLER_RETRY_MAX_DELAY: int = Field(default=10, description="Maximum retry delay (seconds)")
 
     # Crawler Selection
     CRAWLER_DEFAULT_TYPE: Literal["playwright", "crawl4ai"] = Field(
@@ -241,17 +217,13 @@ class Settings(BaseSettings):
     )
 
     # Browser Configuration (Playwright)
-    CRAWLER_BROWSER_HEADLESS: bool = Field(
-        default=True, description="Run browser in headless mode"
-    )
+    CRAWLER_BROWSER_HEADLESS: bool = Field(default=True, description="Run browser in headless mode")
 
     CRAWLER_BROWSER_TIMEOUT: int = Field(
         default=30000, description="Browser operation timeout (milliseconds)"
     )
 
-    CRAWLER_BROWSER_VIEWPORT_WIDTH: int = Field(
-        default=1920, description="Browser viewport width"
-    )
+    CRAWLER_BROWSER_VIEWPORT_WIDTH: int = Field(default=1920, description="Browser viewport width")
 
     CRAWLER_BROWSER_VIEWPORT_HEIGHT: int = Field(
         default=1080, description="Browser viewport height"
@@ -263,18 +235,14 @@ class Settings(BaseSettings):
         description="Maximum content length to fetch (bytes)",
     )
 
-    CRAWLER_FOLLOW_REDIRECTS: bool = Field(
-        default=True, description="Follow HTTP redirects"
-    )
+    CRAWLER_FOLLOW_REDIRECTS: bool = Field(default=True, description="Follow HTTP redirects")
 
     CRAWLER_MAX_REDIRECTS: int = Field(
         default=5, description="Maximum number of redirects to follow"
     )
 
     # robots.txt Configuration
-    CRAWLER_RESPECT_ROBOTS_TXT: bool = Field(
-        default=True, description="Respect robots.txt rules"
-    )
+    CRAWLER_RESPECT_ROBOTS_TXT: bool = Field(default=True, description="Respect robots.txt rules")
 
     CRAWLER_ROBOTS_CACHE_TTL: int = Field(
         default=3600, description="robots.txt cache TTL (seconds)"

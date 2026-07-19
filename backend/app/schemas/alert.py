@@ -9,6 +9,7 @@ from datetime import datetime
 
 class AlertBase(BaseModel):
     """Base alert schema."""
+
     title: str = Field(..., min_length=1, max_length=255)
     description: str = Field(..., max_length=2000)
     alert_type: str = Field(..., pattern="^(competitor|market|pricing|product|news)$")
@@ -18,11 +19,13 @@ class AlertBase(BaseModel):
 
 class AlertCreate(AlertBase):
     """Schema for creating an alert."""
+
     pass
 
 
 class AlertUpdate(BaseModel):
     """Schema for updating an alert."""
+
     title: Optional[str] = Field(None, min_length=1, max_length=255)
     description: Optional[str] = Field(None, max_length=2000)
     alert_type: Optional[str] = Field(None, pattern="^(competitor|market|pricing|product|news)$")
@@ -33,6 +36,7 @@ class AlertUpdate(BaseModel):
 
 class AlertInDB(AlertBase):
     """Schema for alert in database."""
+
     id: str
     user_id: str
     is_read: bool = False
@@ -46,11 +50,13 @@ class AlertInDB(AlertBase):
 
 class AlertResponse(AlertInDB):
     """Schema for alert response."""
+
     pass
 
 
 class AlertListResponse(BaseModel):
     """Schema for alert list response."""
+
     items: List[AlertResponse]
     total: int
     unread_count: int

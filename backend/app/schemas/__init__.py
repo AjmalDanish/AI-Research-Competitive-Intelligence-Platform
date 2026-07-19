@@ -77,56 +77,47 @@ __all__ = [
     "CompetitorUpdate",
     "CompetitorResponse",
     "CompetitorListResponse",
-    
     # Market schemas
     "MarketIntelligenceCreate",
     "MarketIntelligenceUpdate",
     "MarketIntelligenceResponse",
     "MarketAnalysisResponse",
-    
     # User schemas
     "UserCreate",
     "UserUpdate",
     "UserResponse",
     "TokenResponse",
-    
     # Alert schemas
     "AlertCreate",
     "AlertUpdate",
     "AlertResponse",
     "AlertListResponse",
-    
     # Activity schemas
     "ActivityCreate",
     "ActivityResponse",
     "ActivityListResponse",
-    
     # Report schemas
     "ReportCreate",
     "ReportUpdate",
     "ReportResponse",
     "ReportListResponse",
-    
     # Product schemas
     "ProductCreate",
     "ProductUpdate",
     "ProductResponse",
     "ProductListResponse",
-    
     # News schemas
     "NewsCreate",
     "NewsUpdate",
     "NewsResponse",
     "NewsListResponse",
     "NewsSearchResponse",
-    
     # Search schemas
     "SearchQuery",
     "SearchResponse",
     "SavedSearchCreate",
     "SavedSearchUpdate",
     "SavedSearchResponse",
-    
     # Common schemas
     "MessageResponse",
     "HealthResponse",

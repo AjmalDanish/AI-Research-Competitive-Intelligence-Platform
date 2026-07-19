@@ -40,10 +40,10 @@ Base = declarative_base()
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     """
     Get database session.
-    
+
     Yields:
         AsyncSession: Database session
-        
+
     Example:
         async def my_endpoint(db: AsyncSession = Depends(get_db)):
             result = await db.execute(query)
@@ -64,7 +64,7 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 async def init_db() -> None:
     """
     Initialize database by creating all tables.
-    
+
     This should be called during application startup.
     """
     try:
@@ -79,7 +79,7 @@ async def init_db() -> None:
 async def close_db() -> None:
     """
     Close database connections.
-    
+
     This should be called during application shutdown.
     """
     try:
@@ -93,7 +93,7 @@ async def close_db() -> None:
 async def check_db_connection() -> bool:
     """
     Check database connection health.
-    
+
     Returns:
         bool: True if connection is healthy, False otherwise
     """

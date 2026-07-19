@@ -21,23 +21,23 @@ async def list_news(
     limit: int = Query(20, ge=1, le=100),
     competitor_id: Optional[int] = None,
     sentiment: Optional[str] = None,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
 ):
     """
     List competitor news with filtering and pagination.
     """
     query = select(CompetitorNews)
-    
+
     if competitor_id:
         query = query.where(CompetitorNews.competitor_id == competitor_id)
-    
+
     if sentiment:
         query = query.where(CompetitorNews.sentiment == sentiment)
-    
+
     query = query.order_by(CompetitorNews.publish_date.desc()).offset(skip).limit(limit)
     result = await db.execute(query)
     news_items = result.scalars().all()
-    
+
     return {
         "news": [
             {
@@ -66,7 +66,7 @@ async def create_news(
     source_url: str,
     summary: Optional[str] = None,
     source_name: Optional[str] = None,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
 ):
     """
     Create a new competitor news article.
@@ -78,13 +78,13 @@ async def create_news(
         summary=summary,
         source_name=source_name,
     )
-    
+
     db.add(news)
     await db.commit()
     await db.refresh(news)
-    
+
     logger.info(f"New news article created: {news.title}")
-    
+
     return {
         "id": news.id,
         "message": "News article created successfully",
@@ -92,24 +92,16 @@ async def create_news(
 
 
 @router.get("/{news_id}")
-async def get_news(
-    news_id: int,
-    db: AsyncSession = Depends(get_db)
-):
+async def get_news(news_id: int, db: AsyncSession = Depends(get_db)):
     """
     Get news article by ID with full details.
     """
-    result = await db.execute(
-        select(CompetitorNews).where(CompetitorNews.id == news_id)
-    )
+    result = await db.execute(select(CompetitorNews).where(CompetitorNews.id == news_id))
     news = result.scalar_one_or_none()
-    
+
     if not news:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="News article not found"
-        )
-    
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="News article not found")
+
     return {
         "id": news.id,
         "competitor_id": news.competitor_id,

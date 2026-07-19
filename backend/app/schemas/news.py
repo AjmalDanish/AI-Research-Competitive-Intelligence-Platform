@@ -9,6 +9,7 @@ from datetime import datetime
 
 class NewsBase(BaseModel):
     """Base news schema."""
+
     title: str = Field(..., min_length=1, max_length=500)
     summary: str = Field(..., max_length=2000)
     source: str = Field(..., min_length=1, max_length=255)
@@ -20,11 +21,13 @@ class NewsBase(BaseModel):
 
 class NewsCreate(NewsBase):
     """Schema for creating news."""
+
     pass
 
 
 class NewsUpdate(BaseModel):
     """Schema for updating news."""
+
     title: Optional[str] = Field(None, min_length=1, max_length=500)
     summary: Optional[str] = Field(None, max_length=2000)
     source: Optional[str] = Field(None, min_length=1, max_length=255)
@@ -35,6 +38,7 @@ class NewsUpdate(BaseModel):
 
 class NewsInDB(NewsBase):
     """Schema for news in database."""
+
     id: str
     created_at: datetime
     updated_at: datetime
@@ -45,11 +49,13 @@ class NewsInDB(NewsBase):
 
 class NewsResponse(NewsInDB):
     """Schema for news response."""
+
     pass
 
 
 class NewsListResponse(BaseModel):
     """Schema for news list response."""
+
     items: List[NewsResponse]
     total: int
     page: int
@@ -58,6 +64,7 @@ class NewsListResponse(BaseModel):
 
 class NewsSearchResponse(BaseModel):
     """Schema for news search response."""
+
     query: str
     results: List[NewsResponse]
     total: int

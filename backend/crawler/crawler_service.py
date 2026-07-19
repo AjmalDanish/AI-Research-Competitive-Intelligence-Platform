@@ -56,9 +56,7 @@ class CrawlerService:
         elif self.crawler_type == "crawl4ai":
             return Crawl4AICrawler(config=self.config)
         else:
-            logger.warning(
-                f"Unknown crawler type: {self.crawler_type}, defaulting to playwright"
-            )
+            logger.warning(f"Unknown crawler type: {self.crawler_type}, defaulting to playwright")
             return PlaywrightCrawler(config=self.config)
 
     async def crawl_url(

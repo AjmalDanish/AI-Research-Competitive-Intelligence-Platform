@@ -5,10 +5,20 @@ Initialize database tables.
 import asyncio
 from app.db.session import engine, Base
 from app.models import (
-    User, Competitor, CompetitorActivity, 
-    CompetitorProduct, CompetitorNews,
-    MarketTrend, MarketSegment, MarketIntelligence,
-    Alert, AlertRule, SavedSearch, Report, ApiKey, Session
+    User,
+    Competitor,
+    CompetitorActivity,
+    CompetitorProduct,
+    CompetitorNews,
+    MarketTrend,
+    MarketSegment,
+    MarketIntelligence,
+    Alert,
+    AlertRule,
+    SavedSearch,
+    Report,
+    ApiKey,
+    Session,
 )
 
 
