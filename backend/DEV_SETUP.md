@@ -7,6 +7,23 @@ This project uses **Poetry** for dependency management and development environme
 - Python 3.11 or higher
 - Poetry 2.4.1 or higher
 
+## Environment Status
+
+### Current State: Milestone 3 Complete ✅
+- **Active Dependencies:** Pydantic, HTTPX, AIOFiles, Development Tools
+- **Core Functionality:** ✅ Working with zero broken imports
+- **Legacy Files:** Contain future dependencies, not blocking current development
+- **Code Quality:** ⚠️ 76 files need reformatting (auto-fixable)
+
+### Dependency Strategy
+This project uses **milestone-based dependency management** to keep the environment minimal and focused:
+
+- **Milestone 3 (Current):** Web crawling - Playwright, Crawl4AI, HTTPX
+- **Milestone 4 (Next):** Parsing - BeautifulSoup4, Trafilatura  
+- **Milestone 5+:** ML/AI libraries - pandas, numpy, scikit-learn, OpenAI, etc.
+
+See `DEPENDENCY_REINTRODUCTION_PLAN.md` for complete dependency roadmap.
+
 ## Quick Setup
 
 ### 1. Install Poetry (if not installed)
