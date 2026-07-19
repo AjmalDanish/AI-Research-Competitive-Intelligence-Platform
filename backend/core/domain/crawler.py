@@ -15,10 +15,10 @@ from datetime import datetime, timezone
 class CrawlMetrics:
     """
     Crawl execution metrics.
-    
+
     Lightweight metrics as approved for MVP.
     """
-    
+
     def __init__(
         self,
         start_time: datetime,
@@ -32,13 +32,13 @@ class CrawlMetrics:
         self.retry_count = retry_count
         self.robots_checked = robots_checked
         self.robots_allowed = robots_allowed
-    
+
     @property
     def duration_seconds(self) -> float:
         """Calculate crawl duration in seconds."""
         delta = self.end_time - self.start_time
         return delta.total_seconds()
-    
+
     def to_dict(self) -> dict:
         """Convert metrics to dictionary."""
         return {
@@ -54,10 +54,10 @@ class CrawlMetrics:
 class CrawlResult:
     """
     Result of a crawl operation.
-    
+
     Contains the raw HTML content and metadata from a successful crawl.
     """
-    
+
     def __init__(
         self,
         url: str,
@@ -81,22 +81,22 @@ class CrawlResult:
         self.metrics = metrics
         self.crawled_at = crawled_at or datetime.now(timezone.utc)
         self.error = error
-    
+
     @property
     def is_success(self) -> bool:
         """Check if crawl was successful."""
         return self.status_code >= 200 and self.status_code < 300 and self.error is None
-    
+
     @property
     def is_redirect(self) -> bool:
         """Check if result involved redirect."""
         return self.url != self.final_url
-    
+
     @property
     def is_empty(self) -> bool:
         """Check if content is empty."""
         return not self.html or len(self.html.strip()) == 0
-    
+
     def to_dict(self) -> dict:
         """Convert result to dictionary."""
         return {
@@ -114,7 +114,7 @@ class CrawlResult:
             "is_empty": self.is_empty,
             "metrics": self.metrics.to_dict() if self.metrics else None,
         }
-    
+
     @classmethod
     def from_error(
         cls,
@@ -140,11 +140,11 @@ class CrawlResult:
 class CrawlerConfig:
     """
     Configuration for crawler operations.
-    
+
     Runtime configuration for crawl operations,
     separate from application settings.
     """
-    
+
     def __init__(
         self,
         user_agent: str,
@@ -174,7 +174,7 @@ class CrawlerConfig:
         self.headless = headless
         self.viewport_width = viewport_width
         self.viewport_height = viewport_height
-    
+
     @classmethod
     def from_settings(cls, settings) -> "CrawlerConfig":
         """Create crawler config from application settings."""

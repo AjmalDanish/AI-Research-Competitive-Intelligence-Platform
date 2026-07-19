@@ -220,6 +220,9 @@ class RetryManager:
         if last_exception:
             raise last_exception
 
+        # If we somehow got here with no exception, raise a generic error
+        raise RuntimeError("Unexpected state in retry manager")
+
     def get_retry_stats(self) -> dict[str, Any]:
         """
         Get retry statistics (placeholder for future metrics).

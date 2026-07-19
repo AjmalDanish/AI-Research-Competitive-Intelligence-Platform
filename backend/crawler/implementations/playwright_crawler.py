@@ -18,7 +18,8 @@ from backend.core.interfaces.crawler import ICrawler
 from backend.crawler.exceptions import (
     ContentLengthException,
 )
-from playwright.async_api import Page, async_playwright
+from typing import Any, Optional
+from playwright.async_api import Page, async_playwright, Browser, Playwright
 
 logger = get_logger(__name__)
 settings = get_settings()
@@ -34,9 +35,9 @@ class PlaywrightCrawler(ICrawler):
     def __init__(self, config: CrawlerConfig | None = None):
         """Initialize Playwright crawler."""
         self.config = config or CrawlerConfig.from_settings(settings)
-        self._playwright = None
-        self._browser = None
-        self._context = None
+        self._playwright: Optional[Playwright] = None
+        self._browser: Optional[Browser] = None
+        self._context: Optional[Any] = None
 
     @property
     def crawler_name(self) -> str:
@@ -96,6 +97,9 @@ class PlaywrightCrawler(ICrawler):
 
         try:
             await self._init_browser()
+
+            if self._context is None:
+                raise RuntimeError("Browser context not initialized")
 
             page: Page = await self._context.new_page()
 

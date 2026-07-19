@@ -87,7 +87,9 @@ class Crawl4AICrawler(ICrawler):
                 final_url = result.url if result.url else url
 
                 # Get status code
-                status_code = result.status_code if hasattr(result, "status_code") else 200
+                status_code = (
+                    result.status_code if hasattr(result, "status_code") else 200
+                )
 
                 # Get HTML content
                 html = result.html if result.html else ""

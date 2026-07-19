@@ -45,22 +45,22 @@ class URLValidator:
     def __init__(
         self,
         timeout: int = 5,
-        check_accessibility: bool = False,
+        check_accessibility_enabled: bool = False,
     ):
         """
         Initialize URL validator.
 
         Args:
             timeout: Timeout for accessibility check (seconds)
-            check_accessibility: Whether to check if URL is accessible
+            check_accessibility_enabled: Whether to check if URL is accessible
         """
         self.timeout = timeout
-        self.check_accessibility = check_accessibility
+        self.check_accessibility_enabled = check_accessibility_enabled
         self._http_client: httpx.AsyncClient | None = None
 
     async def __aenter__(self):
         """Create HTTP client for accessibility checks."""
-        if self.check_accessibility and self._http_client is None:
+        if self.check_accessibility_enabled and self._http_client is None:
             self._http_client = httpx.AsyncClient(timeout=self.timeout)
         return self
 
@@ -221,7 +221,7 @@ class URLValidator:
             NetworkException: If network error occurs
             TimeoutException: If request times out
         """
-        if not self.check_accessibility:
+        if not self.check_accessibility_enabled:
             logger.debug("Accessibility check disabled, skipping")
             return True
 
@@ -290,7 +290,7 @@ class URLValidator:
         normalized = self.normalize(url)
 
         # Check accessibility (optional)
-        if check_accessibility or self.check_accessibility:
+        if check_accessibility or self.check_accessibility_enabled:
             await self.check_accessibility(normalized)
 
         return normalized

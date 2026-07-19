@@ -17,7 +17,7 @@ from backend.core.domain.crawler import CrawlerConfig, CrawlResult
 class ICrawler(Protocol):
     """
     Abstract crawler interface for all crawler implementations.
-    
+
     This interface defines the contract that all crawlers must implement.
     It enables dependency inversion and makes crawlers interchangeable.
     """
@@ -29,14 +29,14 @@ class ICrawler(Protocol):
     ) -> CrawlResult:
         """
         Crawl a URL and return raw HTML content.
-        
+
         Args:
             url: The URL to crawl
             config: Crawler configuration (optional, uses defaults if None)
-            
+
         Returns:
             CrawlResult containing the HTML content and metadata
-            
+
         Raises:
             CrawlerException: If crawling fails and retries are exhausted
             ValidationError: If URL is invalid
@@ -48,7 +48,7 @@ class ICrawler(Protocol):
     def crawler_name(self) -> str:
         """
         Get the name of the crawler implementation.
-        
+
         Returns:
             Name identifying this crawler implementation
         """

@@ -167,7 +167,7 @@ class RobotsChecker:
             rules, timestamp = self._cache[domain]
             if datetime.now(UTC) - timestamp < timedelta(seconds=self.cache_ttl):
                 logger.debug(f"Using cached robots.txt for domain: {domain}")
-                return rules
+                return list(rules)
 
         # Fetch robots.txt
         robots_url = f"https://{domain}/robots.txt"
@@ -182,7 +182,9 @@ class RobotsChecker:
 
                 # If robots.txt fetch failed, allow all (conservative approach)
                 if response.status_code >= 500:
-                    logger.warning(f"Failed to fetch robots.txt for {domain}, allowing all")
+                    logger.warning(
+                        f"Failed to fetch robots.txt for {domain}, allowing all"
+                    )
                     return []
 
                 # Parse robots.txt

@@ -16,9 +16,12 @@ Clean Architecture:
 
 from backend.config.logging import LoggingConfig, logger
 
+
 def get_logger(name: str):
     """Get logger instance."""
     return LoggingConfig.get_logger(name)
+
+
 from backend.config.settings import Settings, get_settings
 
 # Export for easy import
