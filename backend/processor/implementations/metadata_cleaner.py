@@ -36,7 +36,7 @@ class MetadataCleaner(IContentProcessor):
         content: str,
         metadata: Dict[str, Any],
         options: ProcessingOptions,
-        context: Dict[str, Any]
+        context: Dict[str, Any],
     ) -> tuple[str, Dict[str, Any]]:
         """
         Clean and normalize metadata.
@@ -67,10 +67,7 @@ class MetadataCleaner(IContentProcessor):
         return content, validated_metadata
 
     def validate(
-        self,
-        content: str,
-        metadata: Dict[str, Any],
-        options: ProcessingOptions
+        self, content: str, metadata: Dict[str, Any], options: ProcessingOptions
     ) -> list[str]:
         """
         Validate metadata for cleaning.
@@ -91,21 +88,18 @@ class MetadataCleaner(IContentProcessor):
             return errors
 
         # Validate common metadata fields
-        if 'title' in metadata:
-            if not metadata['title'] or not metadata['title'].strip():
+        if "title" in metadata:
+            if not metadata["title"] or not metadata["title"].strip():
                 errors.append("Title cannot be empty")
 
-        if 'url' in metadata:
-            if not metadata['url'] or not metadata['url'].strip():
+        if "url" in metadata:
+            if not metadata["url"] or not metadata["url"].strip():
                 errors.append("URL cannot be empty")
 
         return errors
 
     def get_processing_metrics(
-        self,
-        input_length: int,
-        output_length: int,
-        duration_seconds: float
+        self, input_length: int, output_length: int, duration_seconds: float
     ) -> Dict[str, Any]:
         """
         Calculate processing metrics for metadata cleanup.
@@ -138,23 +132,25 @@ class MetadataCleaner(IContentProcessor):
         cleaned = {}
 
         # Clean text fields
-        text_fields = ['title', 'description', 'author', 'language', 'content_type']
+        text_fields = ["title", "description", "author", "language", "content_type"]
         for field in text_fields:
             if field in metadata and metadata[field]:
                 cleaned[field] = str(metadata[field]).strip()
 
         # Clean URL fields
-        url_fields = ['url', 'canonical_url']
+        url_fields = ["url", "canonical_url"]
         for field in url_fields:
             if field in metadata and metadata[field]:
                 cleaned[field] = str(metadata[field]).strip()
 
         # Clean list fields
-        list_fields = ['keywords']
+        list_fields = ["keywords"]
         for field in list_fields:
             if field in metadata and metadata[field]:
                 if isinstance(metadata[field], list):
-                    cleaned[field] = [str(item).strip() for item in metadata[field] if str(item).strip()]
+                    cleaned[field] = [
+                        str(item).strip() for item in metadata[field] if str(item).strip()
+                    ]
                 else:
                     cleaned[field] = [str(metadata[field]).strip()]
 
@@ -179,8 +175,15 @@ class MetadataCleaner(IContentProcessor):
 
         for key, value in metadata.items():
             if isinstance(value, list):
-                # Remove duplicates from lists while preserving order
-                deduplicated[key] = list(dict.fromkeys(value))
+                # Only deduplicate lists of hashable items
+                # Skip lists containing unhashable types (like dicts)
+                if value and all(
+                    isinstance(item, (str, int, float, bool, tuple)) for item in value
+                ):
+                    deduplicated[key] = list(dict.fromkeys(value))
+                else:
+                    # Keep original list if it contains unhashable items
+                    deduplicated[key] = value
             else:
                 deduplicated[key] = value
 
@@ -199,11 +202,11 @@ class MetadataCleaner(IContentProcessor):
         validated = {}
 
         # Mark metadata as normalized
-        validated['metadata_normalized'] = True
-        validated['duplicates_removed'] = True
+        validated["metadata_normalized"] = True
+        validated["duplicates_removed"] = True
 
         # Add validation status
-        validated['validation_passed'] = True
+        validated["validation_passed"] = True
 
         # Copy all fields
         validated.update(metadata)

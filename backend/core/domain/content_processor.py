@@ -335,7 +335,7 @@ class ProcessingResult:
             score -= warning_penalty
 
         # Bonus for content quality
-        if self.normalized_text.word_count > 100:
+        if self.normalized_text.normalized_word_count > 100:
             score += 0.1
 
         if self.normalized_text.is_valid:
@@ -350,20 +350,22 @@ class ProcessingResult:
         """Get the effective content after processing."""
         # Return only non-boilerplate, non-navigation content
         effective_segments = [
-            seg for seg in self.text_segments
+            seg
+            for seg in self.text_segments
             if not seg.is_boilerplate and not seg.is_navigation and not seg.is_footer
         ]
         return " ".join(seg.text for seg in effective_segments)
 
     def get_content_by_section_type(self, section_type: str) -> List[ContentSection]:
         """Get content sections by type."""
-        return [section for section in self.content_sections if section.section_type == section_type]
+        return [
+            section for section in self.content_sections if section.section_type == section_type
+        ]
 
     def get_reading_order_text(self) -> str:
         """Get text in proper reading order."""
         sections = self.get_content_by_section_type("content")
         ordered_sections = sorted(sections, key=lambda x: x.position)
         return " ".join(
-            " ".join(seg.text for seg in section.segments)
-            for section in ordered_sections
+            " ".join(seg.text for seg in section.segments) for section in ordered_sections
         )

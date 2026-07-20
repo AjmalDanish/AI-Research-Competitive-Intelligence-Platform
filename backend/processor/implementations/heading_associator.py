@@ -38,7 +38,7 @@ class HeadingAssociator(IContentProcessor):
         content: str,
         metadata: Dict[str, Any],
         options: ProcessingOptions,
-        context: Dict[str, Any]
+        context: Dict[str, Any],
     ) -> tuple[str, Dict[str, Any]]:
         """
         Associate content sections with headings.
@@ -64,7 +64,8 @@ class HeadingAssociator(IContentProcessor):
         # Update metadata
         metadata["headings_associated"] = True
         metadata["heading_count"] = len(headings)
-        metadata["content_sections"] = len(content_sections)
+        metadata["content_sections"] = content_sections
+        metadata["content_section_count"] = len(content_sections)
 
         # Track metrics
         context.setdefault("metrics", {})
@@ -73,10 +74,7 @@ class HeadingAssociator(IContentProcessor):
         return content, metadata
 
     def validate(
-        self,
-        content: str,
-        metadata: Dict[str, Any],
-        options: ProcessingOptions
+        self, content: str, metadata: Dict[str, Any], options: ProcessingOptions
     ) -> list[str]:
         """
         Validate content for heading association.
@@ -98,10 +96,7 @@ class HeadingAssociator(IContentProcessor):
         return errors
 
     def get_processing_metrics(
-        self,
-        input_length: int,
-        output_length: int,
-        duration_seconds: float
+        self, input_length: int, output_length: int, duration_seconds: float
     ) -> Dict[str, Any]:
         """
         Calculate processing metrics for heading association.
@@ -134,27 +129,26 @@ class HeadingAssociator(IContentProcessor):
         headings = []
 
         # Find all markdown-style headings
-        heading_pattern = r'^(#{1,6})\s+(.+)$'
-        for line_num, line in enumerate(content.split('\n'), 1):
+        heading_pattern = r"^(#{1,6})\s+(.+)$"
+        for line_num, line in enumerate(content.split("\n"), 1):
             match = re.match(heading_pattern, line.strip())
             if match:
                 level = len(match.group(1))
                 text = match.group(2).strip()
 
-                headings.append({
-                    'level': level,
-                    'text': text,
-                    'line_number': line_num,
-                    'position': len(headings)
-                })
+                headings.append(
+                    {
+                        "level": level,
+                        "text": text,
+                        "line_number": line_num,
+                        "position": len(headings),
+                    }
+                )
 
         return headings
 
     def _associate_content_with_headings(
-        self,
-        content: str,
-        headings: List[Dict[str, Any]],
-        options: ProcessingOptions
+        self, content: str, headings: List[Dict[str, Any]], options: ProcessingOptions
     ) -> List[Dict[str, Any]]:
         """
         Associate content sections with appropriate headings.
@@ -169,14 +163,9 @@ class HeadingAssociator(IContentProcessor):
         """
         if not headings:
             # No headings, create single section
-            return [{
-                'heading': None,
-                'content': content,
-                'heading_level': 0,
-                'position': 0
-            }]
+            return [{"heading": None, "content": content, "heading_level": 0, "position": 0}]
 
-        content_lines = content.split('\n')
+        content_lines = content.split("\n")
         sections = []
         current_heading = None
         current_section_content = []
@@ -189,15 +178,17 @@ class HeadingAssociator(IContentProcessor):
             # Check if this line is a heading
             is_heading = False
             for heading in headings:
-                if heading['line_number'] == line_num:
+                if heading["line_number"] == line_num:
                     # Save current section if we have content
                     if current_section_content:
-                        sections.append({
-                            'heading': current_heading,
-                            'content': '\n'.join(current_section_content),
-                            'heading_level': current_heading['level'] if current_heading else 0,
-                            'position': len(sections)
-                        })
+                        sections.append(
+                            {
+                                "heading": current_heading,
+                                "content": "\n".join(current_section_content),
+                                "heading_level": current_heading["level"] if current_heading else 0,
+                                "position": len(sections),
+                            }
+                        )
 
                     # Start new section
                     current_heading = heading
@@ -210,12 +201,14 @@ class HeadingAssociator(IContentProcessor):
 
         # Don't forget the last section
         if current_section_content:
-            sections.append({
-                'heading': current_heading,
-                'content': '\n'.join(current_section_content),
-                'heading_level': current_heading['level'] if current_heading else 0,
-                'position': len(sections)
-            })
+            sections.append(
+                {
+                    "heading": current_heading,
+                    "content": "\n".join(current_section_content),
+                    "heading_level": current_heading["level"] if current_heading else 0,
+                    "position": len(sections),
+                }
+            )
 
         return sections
 
