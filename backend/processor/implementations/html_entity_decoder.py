@@ -32,15 +32,15 @@ class HTMLEntityDecoder(IContentProcessor):
 
         # Common HTML entities that might need special handling
         self.common_entities = {
-            '&amp;': '&',
-            '&lt;': '<',
-            '&gt;': '>',
-            '&quot;': '"',
-            '&apos;': "'",
-            '&nbsp;': ' ',
-            '&copy;': '©',
-            '&reg;': '®',
-            '&trade;': '™',
+            "&amp;": "&",
+            "&lt;": "<",
+            "&gt;": ">",
+            "&quot;": '"',
+            "&apos;": "'",
+            "&nbsp;": " ",
+            "&copy;": "©",
+            "&reg;": "®",
+            "&trade;": "™",
         }
 
     def get_stage(self) -> ProcessingStage:
@@ -52,7 +52,7 @@ class HTMLEntityDecoder(IContentProcessor):
         content: str,
         metadata: Dict[str, Any],
         options: ProcessingOptions,
-        context: Dict[str, Any]
+        context: Dict[str, Any],
     ) -> tuple[str, Dict[str, Any]]:
         """
         Decode HTML entities in content.
@@ -84,15 +84,14 @@ class HTMLEntityDecoder(IContentProcessor):
 
         # Track metrics
         context.setdefault("metrics", {})
-        context["metrics"]["html_entities_decoded"] = context["metrics"].get("html_entities_decoded", 0) + entity_count
+        context["metrics"]["html_entities_decoded"] = (
+            context["metrics"].get("html_entities_decoded", 0) + entity_count
+        )
 
         return decoded_content, metadata
 
     def validate(
-        self,
-        content: str,
-        metadata: Dict[str, Any],
-        options: ProcessingOptions
+        self, content: str, metadata: Dict[str, Any], options: ProcessingOptions
     ) -> list[str]:
         """
         Validate content for HTML entity decoding.
@@ -115,10 +114,7 @@ class HTMLEntityDecoder(IContentProcessor):
         return errors
 
     def get_processing_metrics(
-        self,
-        input_length: int,
-        output_length: int,
-        duration_seconds: float
+        self, input_length: int, output_length: int, duration_seconds: float
     ) -> Dict[str, Any]:
         """
         Calculate processing metrics for HTML entity decoding.
@@ -149,14 +145,14 @@ class HTMLEntityDecoder(IContentProcessor):
             Number of HTML entities found
         """
         # Count standard entities
-        entity_pattern = r'&[a-zA-Z]+;'
+        entity_pattern = r"&[a-zA-Z]+;"
         named_entities = len(re.findall(entity_pattern, content))
 
         # Count numeric entities
-        numeric_pattern = r'&#\d+;'
+        numeric_pattern = r"&#\d+;"
         decimal_entities = len(re.findall(numeric_pattern, content))
 
-        hex_pattern = r'&#x[0-9A-Fa-f]+;'
+        hex_pattern = r"&#x[0-9A-Fa-f]+;"
         hex_entities = len(re.findall(hex_pattern, content))
 
         return named_entities + decimal_entities + hex_entities
@@ -174,7 +170,7 @@ class HTMLEntityDecoder(IContentProcessor):
         malformed = []
 
         # Check for entities without semicolons
-        incomplete_pattern = r'&[a-zA-Z0-9]+(?![;])'
+        incomplete_pattern = r"&[a-zA-Z0-9]+(?![;])"
         incomplete = re.findall(incomplete_pattern, content)
         malformed.extend(incomplete)
 
@@ -196,7 +192,9 @@ class HTMLEntityDecoder(IContentProcessor):
 
         return content
 
-    def estimate_processing_time(self, content_length: int, options: ProcessingOptions) -> float:
+    def estimate_processing_time(
+        self, content_length: int, options: ProcessingOptions
+    ) -> float:
         """
         Estimate processing time for HTML entity decoding.
 

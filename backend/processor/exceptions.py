@@ -4,11 +4,13 @@ Content Processor exceptions.
 This module defines all custom exceptions for the content processing module.
 """
 
+from typing import Optional
+
 
 class ProcessorError(Exception):
     """Base exception for processor errors."""
 
-    def __init__(self, message: str, stage: str = None):
+    def __init__(self, message: str, stage: Optional[str] = None):
         """
         Initialize processor error.
 
@@ -31,13 +33,15 @@ class ProcessorNotAvailableError(ProcessorError):
             processor_name: Name of the requested processor
         """
         self.processor_name = processor_name
-        super().__init__(f"Processor '{processor_name}' is not available", "ProcessorAvailability")
+        super().__init__(
+            f"Processor '{processor_name}' is not available", "ProcessorAvailability"
+        )
 
 
 class ProcessingTimeoutError(ProcessorError):
     """Raised when processing operation times out."""
 
-    def __init__(self, timeout_seconds: float, stage: str = None):
+    def __init__(self, timeout_seconds: float, stage: Optional[str] = None):
         """
         Initialize processing timeout error.
 
@@ -48,7 +52,7 @@ class ProcessingTimeoutError(ProcessorError):
         self.timeout_seconds = timeout_seconds
         super().__init__(
             f"Processing timed out after {timeout_seconds} seconds",
-            stage or "Processing"
+            stage or "Processing",
         )
 
 
@@ -65,8 +69,7 @@ class ProcessingValidationError(ProcessorError):
         """
         self.validation_errors = validation_errors
         super().__init__(
-            f"Content validation failed with {len(validation_errors)} errors",
-            stage
+            f"Content validation failed with {len(validation_errors)} errors", stage
         )
 
 

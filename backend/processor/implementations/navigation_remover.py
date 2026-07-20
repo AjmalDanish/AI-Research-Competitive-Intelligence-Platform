@@ -35,33 +35,31 @@ class NavigationRemover(IContentProcessor):
         # Navigation indicators
         self.navigation_indicators = [
             # Navigation menu indicators
-            r'Navigation:',
-            r'Menu:',
-            r'Home.*?About.*?Contact',
-            r'Skip to (main )?content',
-
+            r"Navigation:",
+            r"Menu:",
+            r"Home.*?About.*?Contact",
+            r"Skip to (main )?content",
             # Breadcrumb indicators
-            r'Home\s*[>›»]\s*[\w\s]+',
-            r'Breadcrumb:',
-            r'You are here:',
-
+            r"Home\s*[>›»]\s*[\w\s]+",
+            r"Breadcrumb:",
+            r"You are here:",
             # Header navigation
-            r'Log in|Sign in|Sign up',
-            r'Account|Profile|Settings',
-            r'Cart.*?Checkout',
+            r"Log in|Sign in|Sign up",
+            r"Account|Profile|Settings",
+            r"Cart.*?Checkout",
         ]
 
         # Footer indicators
         self.footer_indicators = [
             # Footer content indicators
-            r'©.*?(?=\n|$)',
-            r'All rights reserved',
-            r'Privacy [Pp]olicy',
-            r'Terms of [Ss]ervice',
-            r'Contact us',
-            r'Social media',
-            r'Follow us',
-            r'Sitemap',
+            r"©.*?(?=\n|$)",
+            r"All rights reserved",
+            r"Privacy [Pp]olicy",
+            r"Terms of [Ss]ervice",
+            r"Contact us",
+            r"Social media",
+            r"Follow us",
+            r"Sitemap",
         ]
 
     def get_stage(self) -> ProcessingStage:
@@ -73,7 +71,7 @@ class NavigationRemover(IContentProcessor):
         content: str,
         metadata: Dict[str, Any],
         options: ProcessingOptions,
-        context: Dict[str, Any]
+        context: Dict[str, Any],
     ) -> tuple[str, Dict[str, Any]]:
         """
         Remove navigation and footer content.
@@ -119,10 +117,7 @@ class NavigationRemover(IContentProcessor):
         return cleaned_content, metadata
 
     def validate(
-        self,
-        content: str,
-        metadata: Dict[str, Any],
-        options: ProcessingOptions
+        self, content: str, metadata: Dict[str, Any], options: ProcessingOptions
     ) -> list[str]:
         """
         Validate content for navigation/footer removal.
@@ -145,10 +140,7 @@ class NavigationRemover(IContentProcessor):
         return errors
 
     def get_processing_metrics(
-        self,
-        input_length: int,
-        output_length: int,
-        duration_seconds: float
+        self, input_length: int, output_length: int, duration_seconds: float
     ) -> Dict[str, Any]:
         """
         Calculate processing metrics for navigation/footer removal.
@@ -187,10 +179,14 @@ class NavigationRemover(IContentProcessor):
         cleaned_content = content
 
         for pattern in self.navigation_indicators:
-            nav_content = re.findall(pattern, cleaned_content, re.IGNORECASE | re.MULTILINE)
+            nav_content = re.findall(
+                pattern, cleaned_content, re.IGNORECASE | re.MULTILINE
+            )
             if nav_content:
                 removed_sections.extend(nav_content)
-                cleaned_content = re.sub(pattern, '', cleaned_content, flags=re.IGNORECASE | re.MULTILINE)
+                cleaned_content = re.sub(
+                    pattern, "", cleaned_content, flags=re.IGNORECASE | re.MULTILINE
+                )
 
         return cleaned_content, removed_sections
 
@@ -208,10 +204,14 @@ class NavigationRemover(IContentProcessor):
         cleaned_content = content
 
         for pattern in self.footer_indicators:
-            footer_content = re.findall(pattern, cleaned_content, re.IGNORECASE | re.MULTILINE)
+            footer_content = re.findall(
+                pattern, cleaned_content, re.IGNORECASE | re.MULTILINE
+            )
             if footer_content:
                 removed_sections.extend(footer_content)
-                cleaned_content = re.sub(pattern, '', cleaned_content, flags=re.IGNORECASE | re.MULTILINE)
+                cleaned_content = re.sub(
+                    pattern, "", cleaned_content, flags=re.IGNORECASE | re.MULTILINE
+                )
 
         return cleaned_content, removed_sections
 
@@ -227,19 +227,23 @@ class NavigationRemover(IContentProcessor):
         """
         # Sidebar indicators (simplified)
         sidebar_patterns = [
-            r'Sidebar:.*?(?=\n\n|$)',
-            r'Also read:.*?(?=\n\n|$)',
-            r'Related posts:.*?(?=\n\n|$)',
+            r"Sidebar:.*?(?=\n\n|$)",
+            r"Also read:.*?(?=\n\n|$)",
+            r"Related posts:.*?(?=\n\n|$)",
         ]
 
         removed_sections = []
         cleaned_content = content
 
         for pattern in sidebar_patterns:
-            sidebar_content = re.findall(pattern, cleaned_content, re.IGNORECASE | re.DOTALL)
+            sidebar_content = re.findall(
+                pattern, cleaned_content, re.IGNORECASE | re.DOTALL
+            )
             if sidebar_content:
                 removed_sections.extend(sidebar_content)
-                cleaned_content = re.sub(pattern, '', cleaned_content, flags=re.IGNORECASE | re.DOTALL)
+                cleaned_content = re.sub(
+                    pattern, "", cleaned_content, flags=re.IGNORECASE | re.DOTALL
+                )
 
         return cleaned_content, removed_sections
 
@@ -253,7 +257,7 @@ class NavigationRemover(IContentProcessor):
         Returns:
             List of navigation/footer lines
         """
-        lines = content.split('\n')
+        lines = content.split("\n")
         nav_footer_lines = []
 
         for line in lines:
@@ -273,7 +277,9 @@ class NavigationRemover(IContentProcessor):
 
         return nav_footer_lines
 
-    def estimate_processing_time(self, content_length: int, options: ProcessingOptions) -> float:
+    def estimate_processing_time(
+        self, content_length: int, options: ProcessingOptions
+    ) -> float:
         """
         Estimate processing time for navigation/footer removal.
 

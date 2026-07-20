@@ -69,7 +69,7 @@ class ProcessingService:
         self,
         options: Optional[ProcessingOptions] = None,
         processors: Optional[List[IContentProcessor]] = None,
-        enable_timeout: bool = True
+        enable_timeout: bool = True,
     ):
         """
         Initialize processing service.
@@ -98,15 +98,23 @@ class ProcessingService:
     def _register_default_processors(self) -> None:
         """Register the default processing pipeline."""
         # Register processors in pipeline order
-        self._processors[ProcessingStage.WHITESPACE_NORMALIZATION] = WhitespaceNormalizer()
+        self._processors[ProcessingStage.WHITESPACE_NORMALIZATION] = (
+            WhitespaceNormalizer()
+        )
         self._processors[ProcessingStage.UNICODE_NORMALIZATION] = UnicodeNormalizer()
         self._processors[ProcessingStage.HTML_ENTITY_DECODING] = HTMLEntityDecoder()
         self._processors[ProcessingStage.BOILERPLATE_REMOVAL] = BoilerplateRemover()
-        self._processors[ProcessingStage.NAVIGATION_FOOTER_REMOVAL] = NavigationRemover()
+        self._processors[ProcessingStage.NAVIGATION_FOOTER_REMOVAL] = (
+            NavigationRemover()
+        )
         self._processors[ProcessingStage.DUPLICATE_DETECTION] = DuplicateDetector()
-        self._processors[ProcessingStage.PARAGRAPH_RECONSTRUCTION] = ParagraphReconstructor()
+        self._processors[ProcessingStage.PARAGRAPH_RECONSTRUCTION] = (
+            ParagraphReconstructor()
+        )
         self._processors[ProcessingStage.HEADING_ASSOCIATION] = HeadingAssociator()
-        self._processors[ProcessingStage.READING_ORDER_RECONSTRUCTION] = ReadingOrderReconstructor()
+        self._processors[ProcessingStage.READING_ORDER_RECONSTRUCTION] = (
+            ReadingOrderReconstructor()
+        )
         self._processors[ProcessingStage.METADATA_CLEANUP] = MetadataCleaner()
         self._processors[ProcessingStage.VALIDATION] = ContentValidator()
 
@@ -153,7 +161,9 @@ class ProcessingService:
             ProcessorNotAvailableError: If processor not available
         """
         if stage not in self._processors:
-            raise ProcessorNotAvailableError(f"Processor for stage '{stage.value}' not available")
+            raise ProcessorNotAvailableError(
+                f"Processor for stage '{stage.value}' not available"
+            )
 
         return self._processors[stage]
 
@@ -161,7 +171,7 @@ class ProcessingService:
         self,
         content: str,
         metadata: Optional[Dict[str, Any]] = None,
-        source_url: Optional[str] = None
+        source_url: Optional[str] = None,
     ) -> ProcessingResult:
         """
         Process content through the complete pipeline.
@@ -240,19 +250,22 @@ class ProcessingService:
                     duration_seconds=duration,
                     errors=[],
                     warnings=[],
-                    metrics=processor.get_processing_metrics(len(original_content), len(content), duration)
+                    metrics=processor.get_processing_metrics(
+                        len(original_content), len(content), duration
+                    ),
                 )
 
                 processing_metrics.add_stage_result(stage_result)
 
                 # Check for timeout
                 if self.enable_timeout and duration > self.options.timeout_seconds:
-                    raise ProcessingTimeoutError(self.options.timeout_seconds, stage.value)
+                    raise ProcessingTimeoutError(
+                        self.options.timeout_seconds, stage.value
+                    )
 
             # Create normalized text
             normalized_text = NormalizedText(
-                original_text=original_content,
-                normalized_text=content
+                original_text=original_content, normalized_text=content
             )
             normalized_text.calculate_statistics()
 
@@ -270,7 +283,9 @@ class ProcessingService:
             processing_metrics.content_compression_ratio = (
                 len(content) / len(original_content) if len(original_content) > 0 else 0
             )
-            processing_metrics.validation_passed = len(processing_metrics.validation_errors) == 0
+            processing_metrics.validation_passed = (
+                len(processing_metrics.validation_errors) == 0
+            )
 
             # Update validation status in metadata
             content_metadata.validation_passed = processing_metrics.validation_passed
@@ -285,7 +300,7 @@ class ProcessingService:
                 metadata=content_metadata,
                 metrics=processing_metrics,
                 processing_complete=True,
-                processing_started=context["timestamp"],
+                processing_started=context["timestamp"],  # type: ignore[arg-type]
                 processing_completed=datetime.now(),
             )
 
@@ -302,16 +317,16 @@ class ProcessingService:
             self._failed_processing_count += 1
 
             # Handle specific exceptions
-            if isinstance(e, (ProcessorError, ProcessingTimeoutError, ProcessingValidationError)):
+            if isinstance(
+                e, (ProcessorError, ProcessingTimeoutError, ProcessingValidationError)
+            ):
                 raise
 
             # Wrap unexpected exceptions
             raise ProcessorError(f"Processing failed: {str(e)}") from e
 
     def _create_text_segments(
-        self,
-        content: str,
-        context: Dict[str, Any]
+        self, content: str, context: Dict[str, Any]
     ) -> List[TextSegment]:
         """
         Create text segments from processed content.
@@ -324,13 +339,13 @@ class ProcessingService:
             List of text segments
         """
         segments = []
-        lines = content.split('\n')
+        lines = content.split("\n")
 
         for position, line in enumerate(lines):
             if line.strip():
                 # Determine segment type (simplified)
                 segment_type = "paragraph"
-                if line.strip().startswith('#'):
+                if line.strip().startswith("#"):
                     segment_type = "heading"
 
                 segment = TextSegment(
@@ -339,23 +354,23 @@ class ProcessingService:
                     position=position,
                     start_index=position,
                     end_index=position + len(line),
-                    level=1 if line.strip().startswith('#') else None,
+                    level=1 if line.strip().startswith("#") else None,
                 )
 
                 # Calculate basic metrics
                 segment.word_count = len(segment.text.split())
                 segment.character_count = len(segment.text)
                 if segment.word_count > 0:
-                    segment.average_word_length = segment.character_count / segment.word_count
+                    segment.average_word_length = (
+                        segment.character_count / segment.word_count
+                    )
 
                 segments.append(segment)
 
         return segments
 
     def _create_content_sections(
-        self,
-        segments: List[TextSegment],
-        metadata: Dict[str, Any]
+        self, segments: List[TextSegment], metadata: Dict[str, Any]
     ) -> List[ContentSection]:
         """
         Create content sections from text segments.
@@ -368,13 +383,15 @@ class ProcessingService:
             List of content sections
         """
         # Simple implementation - one section for all content
-        sections = [ContentSection(
-            section_id="main",
-            heading=None,
-            segments=segments,
-            position=0,
-            section_type="content"
-        )]
+        sections = [
+            ContentSection(
+                section_id="main",
+                heading=None,
+                segments=segments,
+                position=0,
+                section_type="content",
+            )
+        ]
 
         # Calculate section metrics
         for section in sections:
@@ -393,25 +410,25 @@ class ProcessingService:
             ContentMetadata object
         """
         return ContentMetadata(
-            title=metadata.get('title', ''),
-            description=metadata.get('description'),
-            keywords=metadata.get('keywords', []),
-            author=metadata.get('author'),
-            publish_date=metadata.get('publish_date'),
-            language=metadata.get('language'),
-            content_type=metadata.get('content_type'),
-            canonical_url=metadata.get('canonical_url'),
-            og_title=metadata.get('og_title'),
-            og_description=metadata.get('og_description'),
-            og_image=metadata.get('og_image'),
-            og_type=metadata.get('og_type'),
-            twitter_title=metadata.get('twitter_title'),
-            twitter_description=metadata.get('twitter_description'),
-            twitter_image=metadata.get('twitter_image'),
-            twitter_card_type=metadata.get('twitter_card_type'),
-            metadata_normalized=metadata.get('metadata_normalized', False),
-            duplicates_removed=metadata.get('duplicates_removed', False),
-            validation_passed=metadata.get('validation_passed', True)
+            title=metadata.get("title", ""),
+            description=metadata.get("description"),
+            keywords=metadata.get("keywords", []),
+            author=metadata.get("author"),
+            publish_date=metadata.get("publish_date"),
+            language=metadata.get("language"),
+            content_type=metadata.get("content_type"),
+            canonical_url=metadata.get("canonical_url"),
+            og_title=metadata.get("og_title"),
+            og_description=metadata.get("og_description"),
+            og_image=metadata.get("og_image"),
+            og_type=metadata.get("og_type"),
+            twitter_title=metadata.get("twitter_title"),
+            twitter_description=metadata.get("twitter_description"),
+            twitter_image=metadata.get("twitter_image"),
+            twitter_card_type=metadata.get("twitter_card_type"),
+            metadata_normalized=metadata.get("metadata_normalized", False),
+            duplicates_removed=metadata.get("duplicates_removed", False),
+            validation_passed=metadata.get("validation_passed", True),
         )
 
     def get_metrics(self) -> Dict[str, Any]:
@@ -427,7 +444,8 @@ class ProcessingService:
             "failed_processing_count": self._failed_processing_count,
             "success_rate": (
                 self._successful_processing_count / self._total_processing_count
-                if self._total_processing_count > 0 else 0
+                if self._total_processing_count > 0
+                else 0
             ),
             "registered_processors": list(self._processors.keys()),
         }

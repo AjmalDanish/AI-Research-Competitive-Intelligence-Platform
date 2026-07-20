@@ -27,9 +27,13 @@ from backend.processor.implementations.html_entity_decoder import HTMLEntityDeco
 from backend.processor.implementations.boilerplate_remover import BoilerplateRemover
 from backend.processor.implementations.navigation_remover import NavigationRemover
 from backend.processor.implementations.duplicate_detector import DuplicateDetector
-from backend.processor.implementations.paragraph_reconstructor import ParagraphReconstructor
+from backend.processor.implementations.paragraph_reconstructor import (
+    ParagraphReconstructor,
+)
 from backend.processor.implementations.heading_associator import HeadingAssociator
-from backend.processor.implementations.reading_order_reconstructor import ReadingOrderReconstructor
+from backend.processor.implementations.reading_order_reconstructor import (
+    ReadingOrderReconstructor,
+)
 from backend.processor.implementations.metadata_cleaner import MetadataCleaner
 from backend.processor.implementations.content_validator import ContentValidator
 
@@ -51,13 +55,11 @@ from backend.core.interfaces.content_processor import IContentProcessor
 __all__ = [
     # Service
     "ProcessingService",
-
     # Exceptions
     "ProcessorError",
     "ProcessorNotAvailableError",
     "ProcessingTimeoutError",
     "ProcessingValidationError",
-
     # Processor implementations
     "WhitespaceNormalizer",
     "UnicodeNormalizer",
@@ -70,7 +72,6 @@ __all__ = [
     "ReadingOrderReconstructor",
     "MetadataCleaner",
     "ContentValidator",
-
     # Domain models
     "ProcessingResult",
     "ProcessingMetrics",
@@ -80,7 +81,6 @@ __all__ = [
     "ProcessingStage",
     "TextSegment",
     "ContentMetadata",
-
     # Core interface
     "IContentProcessor",
 ]

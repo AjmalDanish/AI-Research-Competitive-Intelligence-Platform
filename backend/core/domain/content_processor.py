@@ -6,9 +6,9 @@ These models represent the structure and metadata of processed content.
 """
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
 from datetime import datetime
 from enum import Enum
+from typing import Any, Literal
 
 
 class ProcessingStage(Enum):
@@ -49,7 +49,7 @@ class ProcessingOptions:
     trim_whitespace: bool = True
 
     # Unicode normalization options
-    unicode_form: str = "NFC"  # NFC, NFD, NFKC, NFKD
+    unicode_form: Literal["NFC", "NFD", "NFKC", "NFKD"] = "NFC"
     normalize_quotes: bool = True
     normalize_dashes: bool = True
 
@@ -95,9 +95,9 @@ class ProcessingStageResult:
     stage: ProcessingStage
     success: bool
     duration_seconds: float
-    errors: List[str] = field(default_factory=list)
-    warnings: List[str] = field(default_factory=list)
-    metrics: Dict[str, Any] = field(default_factory=dict)
+    errors: list[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
+    metrics: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -110,7 +110,7 @@ class ProcessingMetrics:
     content_compression_ratio: float = 0.0
 
     # Stage metrics
-    stage_results: List[ProcessingStageResult] = field(default_factory=list)
+    stage_results: list[ProcessingStageResult] = field(default_factory=list)
 
     # Content metrics
     whitespace_normalized_count: int = 0
@@ -124,8 +124,8 @@ class ProcessingMetrics:
     reading_order_segments: int = 0
 
     # Validation metrics
-    validation_errors: List[str] = field(default_factory=list)
-    validation_warnings: List[str] = field(default_factory=list)
+    validation_errors: list[str] = field(default_factory=list)
+    validation_warnings: list[str] = field(default_factory=list)
     validation_passed: bool = True
 
     # Performance metrics
@@ -147,7 +147,7 @@ class TextSegment:
     position: int
     start_index: int
     end_index: int
-    level: Optional[int] = None  # For headings (1-6)
+    level: int | None = None  # For headings (1-6)
 
     # Additional metadata
     is_duplicate: bool = False
@@ -156,8 +156,10 @@ class TextSegment:
     is_footer: bool = False
 
     # Parent-child relationships
-    parent_heading: Optional[int] = None  # Position of parent heading
-    children_segments: List[int] = field(default_factory=list)  # Positions of child segments
+    parent_heading: int | None = None  # Position of parent heading
+    children_segments: list[int] = field(
+        default_factory=list
+    )  # Positions of child segments
 
     # Quality metrics
     word_count: int = 0
@@ -171,8 +173,8 @@ class ContentSection:
     """A logical section of content with related text segments."""
 
     section_id: str
-    heading: Optional[TextSegment]
-    segments: List[TextSegment]
+    heading: TextSegment | None
+    segments: list[TextSegment]
     position: int
     section_type: str = "content"  # "content", "navigation", "footer", "boilerplate"
 
@@ -217,7 +219,7 @@ class NormalizedText:
 
     # Validation status
     is_valid: bool = True
-    validation_errors: List[str] = field(default_factory=list)
+    validation_errors: list[str] = field(default_factory=list)
 
     def calculate_statistics(self) -> None:
         """Calculate text statistics."""
@@ -227,7 +229,9 @@ class NormalizedText:
         self.word_reduction = self.original_word_count - self.normalized_word_count
 
         if self.original_word_count > 0:
-            self.word_reduction_percentage = (self.word_reduction / self.original_word_count) * 100
+            self.word_reduction_percentage = (
+                self.word_reduction / self.original_word_count
+            ) * 100
 
         # Character counts
         self.original_char_count = len(self.original_text)
@@ -235,7 +239,9 @@ class NormalizedText:
         self.char_reduction = self.original_char_count - self.normalized_char_count
 
         if self.original_char_count > 0:
-            self.char_reduction_percentage = (self.char_reduction / self.original_char_count) * 100
+            self.char_reduction_percentage = (
+                self.char_reduction / self.original_char_count
+            ) * 100
 
 
 @dataclass
@@ -243,25 +249,25 @@ class ContentMetadata:
     """Cleaned and normalized metadata."""
 
     title: str
-    description: Optional[str] = None
-    keywords: List[str] = field(default_factory=list)
-    author: Optional[str] = None
-    publish_date: Optional[datetime] = None
-    language: Optional[str] = None
-    content_type: Optional[str] = None
-    canonical_url: Optional[str] = None
+    description: str | None = None
+    keywords: list[str] = field(default_factory=list)
+    author: str | None = None
+    publish_date: datetime | None = None
+    language: str | None = None
+    content_type: str | None = None
+    canonical_url: str | None = None
 
     # Open Graph data
-    og_title: Optional[str] = None
-    og_description: Optional[str] = None
-    og_image: Optional[str] = None
-    og_type: Optional[str] = None
+    og_title: str | None = None
+    og_description: str | None = None
+    og_image: str | None = None
+    og_type: str | None = None
 
     # Twitter Card data
-    twitter_title: Optional[str] = None
-    twitter_description: Optional[str] = None
-    twitter_image: Optional[str] = None
-    twitter_card_type: Optional[str] = None
+    twitter_title: str | None = None
+    twitter_description: str | None = None
+    twitter_image: str | None = None
+    twitter_card_type: str | None = None
 
     # Processing metadata
     metadata_normalized: bool = False
@@ -300,8 +306,8 @@ class ProcessingResult:
 
     # Processed content
     normalized_text: NormalizedText
-    content_sections: List[ContentSection]
-    text_segments: List[TextSegment]
+    content_sections: list[ContentSection]
+    text_segments: list[TextSegment]
     metadata: ContentMetadata
 
     # Processing metrics
@@ -309,16 +315,16 @@ class ProcessingResult:
 
     # Processing status
     processing_complete: bool = True
-    processing_errors: List[str] = field(default_factory=list)
-    processing_warnings: List[str] = field(default_factory=list)
+    processing_errors: list[str] = field(default_factory=list)
+    processing_warnings: list[str] = field(default_factory=list)
 
     # Quality indicators
     content_quality_score: float = 0.0
     determinism_score: float = 1.0  # Should always be 1.0 for deterministic processing
 
     # Timestamps
-    processing_started: Optional[datetime] = None
-    processing_completed: Optional[datetime] = None
+    processing_started: datetime | None = None
+    processing_completed: datetime | None = None
 
     def calculate_quality_score(self) -> float:
         """Calculate overall content quality score."""
@@ -356,10 +362,12 @@ class ProcessingResult:
         ]
         return " ".join(seg.text for seg in effective_segments)
 
-    def get_content_by_section_type(self, section_type: str) -> List[ContentSection]:
+    def get_content_by_section_type(self, section_type: str) -> list[ContentSection]:
         """Get content sections by type."""
         return [
-            section for section in self.content_sections if section.section_type == section_type
+            section
+            for section in self.content_sections
+            if section.section_type == section_type
         ]
 
     def get_reading_order_text(self) -> str:
@@ -367,5 +375,6 @@ class ProcessingResult:
         sections = self.get_content_by_section_type("content")
         ordered_sections = sorted(sections, key=lambda x: x.position)
         return " ".join(
-            " ".join(seg.text for seg in section.segments) for section in ordered_sections
+            " ".join(seg.text for seg in section.segments)
+            for section in ordered_sections
         )

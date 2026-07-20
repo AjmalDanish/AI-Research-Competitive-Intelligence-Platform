@@ -44,7 +44,7 @@ class IContentProcessor(ABC):
         content: str,
         metadata: Dict[str, Any],
         options: ProcessingOptions,
-        context: Dict[str, Any]
+        context: Dict[str, Any],
     ) -> tuple[str, Dict[str, Any]]:
         """
         Process content according to the processor's specific logic.
@@ -65,10 +65,7 @@ class IContentProcessor(ABC):
 
     @abstractmethod
     def validate(
-        self,
-        content: str,
-        metadata: Dict[str, Any],
-        options: ProcessingOptions
+        self, content: str, metadata: Dict[str, Any], options: ProcessingOptions
     ) -> list[str]:
         """
         Validate content before processing.
@@ -85,10 +82,7 @@ class IContentProcessor(ABC):
 
     @abstractmethod
     def get_processing_metrics(
-        self,
-        input_length: int,
-        output_length: int,
-        duration_seconds: float
+        self, input_length: int, output_length: int, duration_seconds: float
     ) -> Dict[str, Any]:
         """
         Calculate processing metrics for this stage.

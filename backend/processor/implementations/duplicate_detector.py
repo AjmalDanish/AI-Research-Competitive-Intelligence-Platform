@@ -38,7 +38,7 @@ class DuplicateDetector(IContentProcessor):
         content: str,
         metadata: Dict[str, Any],
         options: ProcessingOptions,
-        context: Dict[str, Any]
+        context: Dict[str, Any],
     ) -> tuple[str, Dict[str, Any]]:
         """
         Detect and remove duplicate content.
@@ -65,7 +65,7 @@ class DuplicateDetector(IContentProcessor):
         unique_paragraphs = self._remove_duplicates(paragraphs, duplicates)
 
         # Reconstruct content
-        deduplicated_content = '\n\n'.join(unique_paragraphs)
+        deduplicated_content = "\n\n".join(unique_paragraphs)
 
         # Update metadata
         metadata["duplicates_removed"] = len(duplicates)
@@ -78,10 +78,7 @@ class DuplicateDetector(IContentProcessor):
         return deduplicated_content, metadata
 
     def validate(
-        self,
-        content: str,
-        metadata: Dict[str, Any],
-        options: ProcessingOptions
+        self, content: str, metadata: Dict[str, Any], options: ProcessingOptions
     ) -> list[str]:
         """
         Validate content for duplicate detection.
@@ -102,15 +99,14 @@ class DuplicateDetector(IContentProcessor):
 
         # Validate similarity threshold
         if not 0 <= options.similarity_threshold <= 1:
-            errors.append(f"Invalid similarity threshold: {options.similarity_threshold}")
+            errors.append(
+                f"Invalid similarity threshold: {options.similarity_threshold}"
+            )
 
         return errors
 
     def get_processing_metrics(
-        self,
-        input_length: int,
-        output_length: int,
-        duration_seconds: float
+        self, input_length: int, output_length: int, duration_seconds: float
     ) -> Dict[str, Any]:
         """
         Calculate processing metrics for duplicate detection.
@@ -146,13 +142,11 @@ class DuplicateDetector(IContentProcessor):
             List of paragraphs
         """
         # Split by double newlines to get paragraphs
-        paragraphs = content.split('\n\n')
+        paragraphs = content.split("\n\n")
         return [p.strip() for p in paragraphs if p.strip()]
 
     def _detect_duplicates(
-        self,
-        paragraphs: List[str],
-        options: ProcessingOptions
+        self, paragraphs: List[str], options: ProcessingOptions
     ) -> List[Tuple[int, int]]:
         """
         Detect duplicate paragraphs.
@@ -171,7 +165,7 @@ class DuplicateDetector(IContentProcessor):
             if len(para1) < options.min_duplicate_length:
                 continue
 
-            for j, para2 in enumerate(paragraphs[i+1:], i+1):
+            for j, para2 in enumerate(paragraphs[i + 1 :], i + 1):
                 # Skip short paragraphs
                 if len(para2) < options.min_duplicate_length:
                     continue
@@ -201,9 +195,7 @@ class DuplicateDetector(IContentProcessor):
         return SequenceMatcher(None, text1, text2).ratio()
 
     def _remove_duplicates(
-        self,
-        paragraphs: List[str],
-        duplicates: List[Tuple[int, int]]
+        self, paragraphs: List[str], duplicates: List[Tuple[int, int]]
     ) -> List[str]:
         """
         Remove duplicate paragraphs, keeping the first occurrence.
@@ -222,13 +214,14 @@ class DuplicateDetector(IContentProcessor):
 
         # Return paragraphs not marked for removal
         unique_paragraphs = [
-            para for i, para in enumerate(paragraphs)
-            if i not in indices_to_remove
+            para for i, para in enumerate(paragraphs) if i not in indices_to_remove
         ]
 
         return unique_paragraphs
 
-    def estimate_processing_time(self, content_length: int, options: ProcessingOptions) -> float:
+    def estimate_processing_time(
+        self, content_length: int, options: ProcessingOptions
+    ) -> float:
         """
         Estimate processing time for duplicate detection.
 

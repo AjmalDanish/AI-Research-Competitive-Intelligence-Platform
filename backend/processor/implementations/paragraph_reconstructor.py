@@ -39,7 +39,7 @@ class ParagraphReconstructor(IContentProcessor):
         content: str,
         metadata: Dict[str, Any],
         options: ProcessingOptions,
-        context: Dict[str, Any]
+        context: Dict[str, Any],
     ) -> tuple[str, Dict[str, Any]]:
         """
         Reconstruct and normalize paragraphs.
@@ -66,10 +66,12 @@ class ParagraphReconstructor(IContentProcessor):
         merged_paragraphs = self._merge_short_paragraphs(normalized_paragraphs, options)
 
         # Split long paragraphs if needed
-        reconstructed_paragraphs = self._split_long_paragraphs(merged_paragraphs, options)
+        reconstructed_paragraphs = self._split_long_paragraphs(
+            merged_paragraphs, options
+        )
 
         # Reconstruct content
-        reconstructed_content = '\n\n'.join(reconstructed_paragraphs)
+        reconstructed_content = "\n\n".join(reconstructed_paragraphs)
 
         # Update metadata
         metadata["paragraphs_reconstructed"] = True
@@ -82,10 +84,7 @@ class ParagraphReconstructor(IContentProcessor):
         return reconstructed_content, metadata
 
     def validate(
-        self,
-        content: str,
-        metadata: Dict[str, Any],
-        options: ProcessingOptions
+        self, content: str, metadata: Dict[str, Any], options: ProcessingOptions
     ) -> list[str]:
         """
         Validate content for paragraph reconstruction.
@@ -110,10 +109,7 @@ class ParagraphReconstructor(IContentProcessor):
         return errors
 
     def get_processing_metrics(
-        self,
-        input_length: int,
-        output_length: int,
-        duration_seconds: float
+        self, input_length: int, output_length: int, duration_seconds: float
     ) -> Dict[str, Any]:
         """
         Calculate processing metrics for paragraph reconstruction.
@@ -144,22 +140,20 @@ class ParagraphReconstructor(IContentProcessor):
             List of paragraphs
         """
         # Split by double newlines, then clean each paragraph
-        raw_paragraphs = content.split('\n\n')
+        raw_paragraphs = content.split("\n\n")
         paragraphs = []
 
         for para in raw_paragraphs:
             cleaned_para = para.strip()
             if cleaned_para:
                 # Replace single newlines within paragraph with spaces
-                cleaned_para = ' '.join(cleaned_para.split('\n'))
+                cleaned_para = " ".join(cleaned_para.split("\n"))
                 paragraphs.append(cleaned_para)
 
         return paragraphs
 
     def _normalize_paragraphs(
-        self,
-        paragraphs: List[str],
-        options: ProcessingOptions
+        self, paragraphs: List[str], options: ProcessingOptions
     ) -> List[str]:
         """
         Normalize paragraph structure.
@@ -187,9 +181,7 @@ class ParagraphReconstructor(IContentProcessor):
         return normalized
 
     def _merge_short_paragraphs(
-        self,
-        paragraphs: List[str],
-        options: ProcessingOptions
+        self, paragraphs: List[str], options: ProcessingOptions
     ) -> List[str]:
         """
         Merge very short paragraphs with neighbors.
@@ -208,8 +200,9 @@ class ParagraphReconstructor(IContentProcessor):
             current = paragraphs[i]
 
             # Check if paragraph is too short and there's a next paragraph
-            if (len(current) < options.min_paragraph_length * 2 and
-                i + 1 < len(paragraphs)):
+            if len(current) < options.min_paragraph_length * 2 and i + 1 < len(
+                paragraphs
+            ):
 
                 # Merge with next paragraph
                 merged.append(f"{current} {paragraphs[i + 1]}")
@@ -221,9 +214,7 @@ class ParagraphReconstructor(IContentProcessor):
         return merged
 
     def _split_long_paragraphs(
-        self,
-        paragraphs: List[str],
-        options: ProcessingOptions
+        self, paragraphs: List[str], options: ProcessingOptions
     ) -> List[str]:
         """
         Split very long paragraphs.
@@ -240,12 +231,19 @@ class ParagraphReconstructor(IContentProcessor):
         for paragraph in paragraphs:
             if len(paragraph) > options.max_paragraph_length:
                 # Split at sentence boundaries
-                sentences = re.split(r'(?<=[.!?])\s+', paragraph)
+                sentences = re.split(r"(?<=[.!?])\s+", paragraph)
                 current_chunk = ""
 
                 for sentence in sentences:
-                    if len(current_chunk + " " + sentence) <= options.max_paragraph_length:
-                        current_chunk = f"{current_chunk} {sentence}".strip() if current_chunk else sentence
+                    if (
+                        len(current_chunk + " " + sentence)
+                        <= options.max_paragraph_length
+                    ):
+                        current_chunk = (
+                            f"{current_chunk} {sentence}".strip()
+                            if current_chunk
+                            else sentence
+                        )
                     else:
                         if current_chunk:
                             split_paragraphs.append(current_chunk)
@@ -258,7 +256,9 @@ class ParagraphReconstructor(IContentProcessor):
 
         return split_paragraphs
 
-    def estimate_processing_time(self, content_length: int, options: ProcessingOptions) -> float:
+    def estimate_processing_time(
+        self, content_length: int, options: ProcessingOptions
+    ) -> float:
         """
         Estimate processing time for paragraph reconstruction.
 

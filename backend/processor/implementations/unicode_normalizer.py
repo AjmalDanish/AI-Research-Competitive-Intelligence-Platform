@@ -35,20 +35,20 @@ class UnicodeNormalizer(IContentProcessor):
         self.quote_mappings = {
             '"': '"',  # Left and right double quotes to standard
             '"': '"',
-            ''': "'",  # Left and right single quotes to standard
-            ''': "'",
-            '„': '"',  # Low double quotes
+            """: "'",  # Left and right single quotes to standard
+            """: "'",
+            "„": '"',  # Low double quotes
             "‚": "'",  # Low single quotes
-            '«': '"',  # Angle quotes
-            '»': '"',
-            '‹': "'",
-            '›': "'",
+            "«": '"',  # Angle quotes
+            "»": '"',
+            "‹": "'",
+            "›": "'",
         }
 
         self.dash_mappings = {
-            '–': '-',  # En dash
-            '—': '--',  # Em dash
-            '―': '--',  # Horizontal bar
+            "–": "-",  # En dash
+            "—": "--",  # Em dash
+            "―": "--",  # Horizontal bar
         }
 
     def get_stage(self) -> ProcessingStage:
@@ -60,7 +60,7 @@ class UnicodeNormalizer(IContentProcessor):
         content: str,
         metadata: Dict[str, Any],
         options: ProcessingOptions,
-        context: Dict[str, Any]
+        context: Dict[str, Any],
     ) -> tuple[str, Dict[str, Any]]:
         """
         Normalize Unicode content.
@@ -82,12 +82,11 @@ class UnicodeNormalizer(IContentProcessor):
         # Apply Unicode form normalization
         try:
             normalized_content = unicodedata.normalize(
-                options.unicode_form,
-                normalized_content
+                options.unicode_form, normalized_content
             )
         except (ValueError, TypeError) as e:
             # Fall back to NFC if invalid form
-            normalized_content = unicodedata.normalize('NFC', normalized_content)
+            normalized_content = unicodedata.normalize("NFC", normalized_content)
 
         # Normalize quotes if enabled
         if options.normalize_quotes:
@@ -106,15 +105,14 @@ class UnicodeNormalizer(IContentProcessor):
 
         # Track metrics
         context.setdefault("metrics", {})
-        context["metrics"]["unicode_normalized_count"] = context["metrics"].get("unicode_normalized_count", 0) + 1
+        context["metrics"]["unicode_normalized_count"] = (
+            context["metrics"].get("unicode_normalized_count", 0) + 1
+        )
 
         return normalized_content, metadata
 
     def validate(
-        self,
-        content: str,
-        metadata: Dict[str, Any],
-        options: ProcessingOptions
+        self, content: str, metadata: Dict[str, Any], options: ProcessingOptions
     ) -> list[str]:
         """
         Validate content for Unicode normalization.
@@ -130,23 +128,20 @@ class UnicodeNormalizer(IContentProcessor):
         errors = []
 
         # Validate Unicode form option
-        valid_forms = ['NFC', 'NFD', 'NFKC', 'NFKD']
+        valid_forms = ["NFC", "NFD", "NFKC", "NFKD"]
         if options.unicode_form not in valid_forms:
             errors.append(f"Invalid Unicode form: {options.unicode_form}")
 
         # Check for problematic Unicode sequences
         try:
-            content.encode('utf-8')
+            content.encode("utf-8")
         except UnicodeEncodeError as e:
             errors.append(f"Content contains non-UTF-8 encodable characters: {e}")
 
         return errors
 
     def get_processing_metrics(
-        self,
-        input_length: int,
-        output_length: int,
-        duration_seconds: float
+        self, input_length: int, output_length: int, duration_seconds: float
     ) -> Dict[str, Any]:
         """
         Calculate processing metrics for Unicode normalization.
@@ -213,21 +208,23 @@ class UnicodeNormalizer(IContentProcessor):
         """
         # Remove zero-width characters
         invisible_chars = [
-            '\u200B',  # Zero-width space
-            '\u200C',  # Zero-width non-joiner
-            '\u200D',  # Zero-width joiner
-            '\uFEFF',  # Zero-width no-break space
-            '\u00AD',  # Soft hyphen
+            "\u200b",  # Zero-width space
+            "\u200c",  # Zero-width non-joiner
+            "\u200d",  # Zero-width joiner
+            "\ufeff",  # Zero-width no-break space
+            "\u00ad",  # Soft hyphen
         ]
 
         normalized_content = content
 
         for char in invisible_chars:
-            normalized_content = normalized_content.replace(char, '')
+            normalized_content = normalized_content.replace(char, "")
 
         return normalized_content
 
-    def estimate_processing_time(self, content_length: int, options: ProcessingOptions) -> float:
+    def estimate_processing_time(
+        self, content_length: int, options: ProcessingOptions
+    ) -> float:
         """
         Estimate processing time for Unicode normalization.
 

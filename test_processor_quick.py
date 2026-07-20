@@ -31,9 +31,9 @@ def test_processing_service_basic():
 
     # Verify result structure
     assert result is not None
-    assert hasattr(result, 'normalized_text')
-    assert hasattr(result, 'metrics')
-    assert hasattr(result, 'metadata')
+    assert hasattr(result, "normalized_text")
+    assert hasattr(result, "metrics")
+    assert hasattr(result, "metadata")
 
     # Verify normalization worked
     assert result.normalized_text.original_text == test_content
@@ -46,7 +46,7 @@ def test_processing_service_basic():
     # Verify metadata (Content Processor doesn't extract titles - that's Parser's job)
     # The title will be empty if not provided in input metadata
     assert result.metadata is not None
-    assert hasattr(result.metadata, 'validation_passed')
+    assert hasattr(result.metadata, "validation_passed")
 
     print("✅ Basic processing test passed")
     return True
@@ -124,5 +124,6 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"❌ Test failed: {e}")
         import traceback
+
         traceback.print_exc()
         exit(1)

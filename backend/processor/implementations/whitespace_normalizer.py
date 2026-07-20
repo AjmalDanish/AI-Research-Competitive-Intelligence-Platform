@@ -41,7 +41,7 @@ class WhitespaceNormalizer(IContentProcessor):
         content: str,
         metadata: Dict[str, Any],
         options: ProcessingOptions,
-        context: Dict[str, Any]
+        context: Dict[str, Any],
     ) -> tuple[str, Dict[str, Any]]:
         """
         Normalize whitespace in content.
@@ -78,15 +78,14 @@ class WhitespaceNormalizer(IContentProcessor):
 
         # Track metrics
         context.setdefault("metrics", {})
-        context["metrics"]["whitespace_normalized_count"] = context["metrics"].get("whitespace_normalized_count", 0) + 1
+        context["metrics"]["whitespace_normalized_count"] = (
+            context["metrics"].get("whitespace_normalized_count", 0) + 1
+        )
 
         return normalized_content, metadata
 
     def validate(
-        self,
-        content: str,
-        metadata: Dict[str, Any],
-        options: ProcessingOptions
+        self, content: str, metadata: Dict[str, Any], options: ProcessingOptions
     ) -> list[str]:
         """
         Validate content for whitespace normalization.
@@ -103,15 +102,14 @@ class WhitespaceNormalizer(IContentProcessor):
 
         # Check if content is too short after processing
         if len(content.strip()) < options.min_paragraph_length:
-            errors.append(f"Content too short after whitespace normalization: {len(content.strip())} characters")
+            errors.append(
+                f"Content too short after whitespace normalization: {len(content.strip())} characters"
+            )
 
         return errors
 
     def get_processing_metrics(
-        self,
-        input_length: int,
-        output_length: int,
-        duration_seconds: float
+        self, input_length: int, output_length: int, duration_seconds: float
     ) -> Dict[str, Any]:
         """
         Calculate processing metrics for whitespace normalization.
@@ -125,7 +123,9 @@ class WhitespaceNormalizer(IContentProcessor):
             Dictionary of processing metrics
         """
         reduction = input_length - output_length
-        reduction_percentage = (reduction / input_length * 100) if input_length > 0 else 0
+        reduction_percentage = (
+            (reduction / input_length * 100) if input_length > 0 else 0
+        )
 
         return {
             "input_length": input_length,
@@ -147,13 +147,13 @@ class WhitespaceNormalizer(IContentProcessor):
             Content with normalized line breaks
         """
         # Normalize Windows line breaks (\r\n) to Unix (\n)
-        content = re.sub(r'\r\n', '\n', content)
+        content = re.sub(r"\r\n", "\n", content)
 
         # Normalize Mac line breaks (\r) to Unix (\n)
-        content = re.sub(r'\r', '\n', content)
+        content = re.sub(r"\r", "\n", content)
 
         # Collapse multiple consecutive line breaks
-        content = re.sub(r'\n{3,}', '\n\n', content)
+        content = re.sub(r"\n{3,}", "\n\n", content)
 
         return content
 
@@ -168,15 +168,15 @@ class WhitespaceNormalizer(IContentProcessor):
             Content with collapsed spaces
         """
         # Collapse multiple spaces within lines
-        lines = content.split('\n')
+        lines = content.split("\n")
         collapsed_lines = []
 
         for line in lines:
             # Collapse multiple spaces
-            collapsed_line = re.sub(r' +', ' ', line)
+            collapsed_line = re.sub(r" +", " ", line)
             collapsed_lines.append(collapsed_line)
 
-        return '\n'.join(collapsed_lines)
+        return "\n".join(collapsed_lines)
 
     def _trim_whitespace(self, content: str) -> str:
         """
@@ -188,7 +188,7 @@ class WhitespaceNormalizer(IContentProcessor):
         Returns:
             Content with trimmed whitespace
         """
-        lines = content.split('\n')
+        lines = content.split("\n")
         trimmed_lines = [line.strip() for line in lines]
 
         # Remove empty lines at the beginning
@@ -199,9 +199,11 @@ class WhitespaceNormalizer(IContentProcessor):
         while trimmed_lines and not trimmed_lines[-1]:
             trimmed_lines.pop()
 
-        return '\n'.join(trimmed_lines)
+        return "\n".join(trimmed_lines)
 
-    def estimate_processing_time(self, content_length: int, options: ProcessingOptions) -> float:
+    def estimate_processing_time(
+        self, content_length: int, options: ProcessingOptions
+    ) -> float:
         """
         Estimate processing time for whitespace normalization.
 

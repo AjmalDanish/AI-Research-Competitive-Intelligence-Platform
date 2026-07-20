@@ -37,42 +37,36 @@ class BoilerplateRemover(IContentProcessor):
         # Common boilerplate patterns
         self.boilerplate_patterns = [
             # Copyright notices
-            r'©\s*\d{4}\s*[A-Za-z\s]+.*?(?=\n|$)',
-            r'All rights reserved',
-            r'Reproduction prohibited',
-
+            r"©\s*\d{4}\s*[A-Za-z\s]+.*?(?=\n|$)",
+            r"All rights reserved",
+            r"Reproduction prohibited",
             # Cookie notices
-            r'Cookies? [Pp]olicy',
-            r'We use cookies',
-            r'By continuing to use',
-            r'Cookie consent',
-
+            r"Cookies? [Pp]olicy",
+            r"We use cookies",
+            r"By continuing to use",
+            r"Cookie consent",
             # Subscription forms
-            r'Subscribe to our',
-            r'Sign up for',
-            r'Join our newsletter',
-            r'Get the latest news',
-
+            r"Subscribe to our",
+            r"Sign up for",
+            r"Join our newsletter",
+            r"Get the latest news",
             # Social media
-            r'Follow us on',
-            r'Connect with us',
-            r'Like us on Facebook',
-            r'Follow on Twitter',
-
+            r"Follow us on",
+            r"Connect with us",
+            r"Like us on Facebook",
+            r"Follow on Twitter",
             # Privacy policy links
-            r'Privacy [Pp]olicy',
-            r'Terms of [Ss]ervice',
-            r'Terms and [Cc]onditions',
-
+            r"Privacy [Pp]olicy",
+            r"Terms of [Ss]ervice",
+            r"Terms and [Cc]onditions",
             # Footer indicators
-            r'Contact us:',
-            r'Email us at:',
-            r'Call us at:',
-
+            r"Contact us:",
+            r"Email us at:",
+            r"Call us at:",
             # Ad indicators
-            r'Advertisement',
-            r'Sponsored content',
-            r'Paid promotion',
+            r"Advertisement",
+            r"Sponsored content",
+            r"Paid promotion",
         ]
 
     def get_stage(self) -> ProcessingStage:
@@ -84,7 +78,7 @@ class BoilerplateRemover(IContentProcessor):
         content: str,
         metadata: Dict[str, Any],
         options: ProcessingOptions,
-        context: Dict[str, Any]
+        context: Dict[str, Any],
     ) -> tuple[str, Dict[str, Any]]:
         """
         Remove boilerplate content.
@@ -120,7 +114,9 @@ class BoilerplateRemover(IContentProcessor):
             removed_sections.extend(social_removed)
 
         # Remove common boilerplate patterns
-        cleaned_content, boilerplate_removed = self._remove_boilerplate_patterns(cleaned_content)
+        cleaned_content, boilerplate_removed = self._remove_boilerplate_patterns(
+            cleaned_content
+        )
         removed_sections.extend(boilerplate_removed)
 
         # Update metadata
@@ -134,10 +130,7 @@ class BoilerplateRemover(IContentProcessor):
         return cleaned_content, metadata
 
     def validate(
-        self,
-        content: str,
-        metadata: Dict[str, Any],
-        options: ProcessingOptions
+        self, content: str, metadata: Dict[str, Any], options: ProcessingOptions
     ) -> list[str]:
         """
         Validate content for boilerplate removal.
@@ -160,10 +153,7 @@ class BoilerplateRemover(IContentProcessor):
         return errors
 
     def get_processing_metrics(
-        self,
-        input_length: int,
-        output_length: int,
-        duration_seconds: float
+        self, input_length: int, output_length: int, duration_seconds: float
     ) -> Dict[str, Any]:
         """
         Calculate processing metrics for boilerplate removal.
@@ -199,9 +189,9 @@ class BoilerplateRemover(IContentProcessor):
             Tuple of (cleaned_content, removed_comments)
         """
         # Remove HTML comments
-        html_comment_pattern = r'<!--.*?-->'
+        html_comment_pattern = r"<!--.*?-->"
         comments = re.findall(html_comment_pattern, content, re.DOTALL)
-        cleaned_content = re.sub(html_comment_pattern, '', content)
+        cleaned_content = re.sub(html_comment_pattern, "", content)
 
         return cleaned_content, comments
 
@@ -217,9 +207,9 @@ class BoilerplateRemover(IContentProcessor):
         """
         # Simple advertisement detection
         ad_patterns = [
-            r'Advertisement.*?(?=\n\n|$)',
-            r'Sponsored.*?(?=\n\n|$)',
-            r'Ad by.*?(?=\n\n|$)',
+            r"Advertisement.*?(?=\n\n|$)",
+            r"Sponsored.*?(?=\n\n|$)",
+            r"Ad by.*?(?=\n\n|$)",
         ]
 
         removed_sections = []
@@ -229,7 +219,9 @@ class BoilerplateRemover(IContentProcessor):
             ads = re.findall(pattern, cleaned_content, re.IGNORECASE | re.DOTALL)
             if ads:
                 removed_sections.extend(ads)
-                cleaned_content = re.sub(pattern, '', cleaned_content, flags=re.IGNORECASE | re.DOTALL)
+                cleaned_content = re.sub(
+                    pattern, "", cleaned_content, flags=re.IGNORECASE | re.DOTALL
+                )
 
         return cleaned_content, removed_sections
 
@@ -245,19 +237,23 @@ class BoilerplateRemover(IContentProcessor):
         """
         # Social media patterns
         social_patterns = [
-            r'Follow us on.*?(?=\n\n|$)',
-            r'Connect with us.*?(?=\n\n|$)',
-            r'Like.*?share.*?(?=\n\n|$)',
+            r"Follow us on.*?(?=\n\n|$)",
+            r"Connect with us.*?(?=\n\n|$)",
+            r"Like.*?share.*?(?=\n\n|$)",
         ]
 
         removed_sections = []
         cleaned_content = content
 
         for pattern in social_patterns:
-            social_content = re.findall(pattern, cleaned_content, re.IGNORECASE | re.DOTALL)
+            social_content = re.findall(
+                pattern, cleaned_content, re.IGNORECASE | re.DOTALL
+            )
             if social_content:
                 removed_sections.extend(social_content)
-                cleaned_content = re.sub(pattern, '', cleaned_content, flags=re.IGNORECASE | re.DOTALL)
+                cleaned_content = re.sub(
+                    pattern, "", cleaned_content, flags=re.IGNORECASE | re.DOTALL
+                )
 
         return cleaned_content, removed_sections
 
@@ -278,7 +274,9 @@ class BoilerplateRemover(IContentProcessor):
             matches = re.findall(pattern, cleaned_content, re.IGNORECASE | re.MULTILINE)
             if matches:
                 removed_patterns.extend(matches)
-                cleaned_content = re.sub(pattern, '', cleaned_content, flags=re.IGNORECASE | re.MULTILINE)
+                cleaned_content = re.sub(
+                    pattern, "", cleaned_content, flags=re.IGNORECASE | re.MULTILINE
+                )
 
         return cleaned_content, removed_patterns
 
@@ -292,7 +290,7 @@ class BoilerplateRemover(IContentProcessor):
         Returns:
             List of boilerplate lines
         """
-        lines = content.split('\n')
+        lines = content.split("\n")
         boilerplate_lines = []
 
         for line in lines:
@@ -304,7 +302,9 @@ class BoilerplateRemover(IContentProcessor):
 
         return boilerplate_lines
 
-    def estimate_processing_time(self, content_length: int, options: ProcessingOptions) -> float:
+    def estimate_processing_time(
+        self, content_length: int, options: ProcessingOptions
+    ) -> float:
         """
         Estimate processing time for boilerplate removal.
 

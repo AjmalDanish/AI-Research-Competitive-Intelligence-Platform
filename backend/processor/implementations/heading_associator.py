@@ -59,7 +59,9 @@ class HeadingAssociator(IContentProcessor):
         headings = self._extract_headings(content)
 
         # Associate content with headings
-        content_sections = self._associate_content_with_headings(content, headings, options)
+        content_sections = self._associate_content_with_headings(
+            content, headings, options
+        )
 
         # Update metadata
         metadata["headings_associated"] = True
@@ -126,7 +128,7 @@ class HeadingAssociator(IContentProcessor):
         Returns:
             List of heading dictionaries
         """
-        headings = []
+        headings: List[Dict[str, Any]] = []
 
         # Find all markdown-style headings
         heading_pattern = r"^(#{1,6})\s+(.+)$"
@@ -163,12 +165,14 @@ class HeadingAssociator(IContentProcessor):
         """
         if not headings:
             # No headings, create single section
-            return [{"heading": None, "content": content, "heading_level": 0, "position": 0}]
+            return [
+                {"heading": None, "content": content, "heading_level": 0, "position": 0}
+            ]
 
         content_lines = content.split("\n")
-        sections = []
+        sections: List[Dict[str, Any]] = []
         current_heading = None
-        current_section_content = []
+        current_section_content: List[str] = []
 
         # Initialize with first heading
         if headings:
@@ -185,7 +189,9 @@ class HeadingAssociator(IContentProcessor):
                             {
                                 "heading": current_heading,
                                 "content": "\n".join(current_section_content),
-                                "heading_level": current_heading["level"] if current_heading else 0,
+                                "heading_level": (
+                                    current_heading["level"] if current_heading else 0
+                                ),
                                 "position": len(sections),
                             }
                         )
@@ -212,7 +218,9 @@ class HeadingAssociator(IContentProcessor):
 
         return sections
 
-    def estimate_processing_time(self, content_length: int, options: ProcessingOptions) -> float:
+    def estimate_processing_time(
+        self, content_length: int, options: ProcessingOptions
+    ) -> float:
         """
         Estimate processing time for heading association.
 

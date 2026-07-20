@@ -38,7 +38,7 @@ class ContentValidator(IContentProcessor):
         content: str,
         metadata: Dict[str, Any],
         options: ProcessingOptions,
-        context: Dict[str, Any]
+        context: Dict[str, Any],
     ) -> tuple[str, Dict[str, Any]]:
         """
         Validate processed content.
@@ -57,12 +57,16 @@ class ContentValidator(IContentProcessor):
 
         # Content length validation
         if not self._validate_content_length(content, options):
-            validation_errors.append(f"Content length {len(content)} below minimum {options.minimum_content_length}")
+            validation_errors.append(
+                f"Content length {len(content)} below minimum {options.minimum_content_length}"
+            )
 
         # Empty content validation
         if not self._validate_non_empty(content, options):
             if options.allow_empty_content:
-                validation_warnings.append("Content is empty but allowed by configuration")
+                validation_warnings.append(
+                    "Content is empty but allowed by configuration"
+                )
             else:
                 validation_errors.append("Content is empty and not allowed")
 
@@ -92,15 +96,13 @@ class ContentValidator(IContentProcessor):
         # Raise error if strict validation and errors found
         if options.strict_validation and validation_errors:
             from backend.processor.exceptions import ProcessingValidationError
+
             raise ProcessingValidationError(validation_errors, "ContentValidation")
 
         return content, metadata
 
     def validate(
-        self,
-        content: str,
-        metadata: Dict[str, Any],
-        options: ProcessingOptions
+        self, content: str, metadata: Dict[str, Any], options: ProcessingOptions
     ) -> list[str]:
         """
         Validate content without applying strict validation.
@@ -125,10 +127,7 @@ class ContentValidator(IContentProcessor):
         return errors
 
     def get_processing_metrics(
-        self,
-        input_length: int,
-        output_length: int,
-        duration_seconds: float
+        self, input_length: int, output_length: int, duration_seconds: float
     ) -> Dict[str, Any]:
         """
         Calculate processing metrics for content validation.
@@ -148,7 +147,9 @@ class ContentValidator(IContentProcessor):
             "validation_checks_performed": 4,  # Fixed number of validation checks
         }
 
-    def _validate_content_length(self, content: str, options: ProcessingOptions) -> bool:
+    def _validate_content_length(
+        self, content: str, options: ProcessingOptions
+    ) -> bool:
         """
         Validate content length requirements.
 
@@ -177,7 +178,9 @@ class ContentValidator(IContentProcessor):
 
         return len(content.strip()) > 0
 
-    def _validate_content_quality(self, content: str, options: ProcessingOptions) -> List[str]:
+    def _validate_content_quality(
+        self, content: str, options: ProcessingOptions
+    ) -> List[str]:
         """
         Validate content quality.
 
@@ -191,11 +194,11 @@ class ContentValidator(IContentProcessor):
         errors = []
 
         # Check for excessive whitespace
-        if content.count('    ') > len(content) // 10:
+        if content.count("    ") > len(content) // 10:
             errors.append("Excessive tab characters detected")
 
         # Check for excessive consecutive line breaks
-        if content.count('\n\n\n') > 3:
+        if content.count("\n\n\n") > 3:
             errors.append("Excessive consecutive line breaks")
 
         # Check for very short content
@@ -204,7 +207,9 @@ class ContentValidator(IContentProcessor):
 
         return errors
 
-    def _validate_content_structure(self, content: str, options: ProcessingOptions) -> List[str]:
+    def _validate_content_structure(
+        self, content: str, options: ProcessingOptions
+    ) -> List[str]:
         """
         Validate content structure.
 
@@ -225,12 +230,14 @@ class ContentValidator(IContentProcessor):
             errors.append("Unbalanced single quotes")
 
         # Check for unusual patterns
-        if '<<' in content or '>>' in content:
+        if "<<" in content or ">>" in content:
             errors.append("Unusual character patterns detected")
 
         return errors
 
-    def _validate_content_consistency(self, content: str, metadata: Dict[str, Any]) -> List[str]:
+    def _validate_content_consistency(
+        self, content: str, metadata: Dict[str, Any]
+    ) -> List[str]:
         """
         Validate content consistency with metadata.
 
@@ -244,21 +251,23 @@ class ContentValidator(IContentProcessor):
         errors = []
 
         # Check if title matches content
-        if 'title' in metadata and metadata['title']:
-            title = metadata['title'].strip().lower()
+        if "title" in metadata and metadata["title"]:
+            title = metadata["title"].strip().lower()
             if title and title not in content.lower()[:200]:
                 errors.append("Title not found in first 200 characters of content")
 
         # Check language consistency
-        if 'language' in metadata and metadata['language']:
+        if "language" in metadata and metadata["language"]:
             # Simple check - would need more sophisticated analysis
-            language = metadata['language'].lower()
-            if language not in ['en', 'es', 'fr', 'de', 'it', 'pt', 'nl']:
+            language = metadata["language"].lower()
+            if language not in ["en", "es", "fr", "de", "it", "pt", "nl"]:
                 errors.append(f"Language '{language}' not commonly supported")
 
         return errors
 
-    def estimate_processing_time(self, content_length: int, options: ProcessingOptions) -> float:
+    def estimate_processing_time(
+        self, content_length: int, options: ProcessingOptions
+    ) -> float:
         """
         Estimate processing time for content validation.
 

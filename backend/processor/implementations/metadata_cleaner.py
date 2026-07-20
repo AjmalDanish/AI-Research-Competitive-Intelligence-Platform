@@ -148,11 +148,13 @@ class MetadataCleaner(IContentProcessor):
         for field in list_fields:
             if field in metadata and metadata[field]:
                 if isinstance(metadata[field], list):
-                    cleaned[field] = [
-                        str(item).strip() for item in metadata[field] if str(item).strip()
+                    cleaned[field] = [  # type: ignore[assignment]
+                        str(item).strip()
+                        for item in metadata[field]
+                        if str(item).strip()
                     ]
                 else:
-                    cleaned[field] = [str(metadata[field]).strip()]
+                    cleaned[field] = [str(metadata[field]).strip()]  # type: ignore[assignment]
 
         # Copy remaining fields
         for key, value in metadata.items():
@@ -213,7 +215,9 @@ class MetadataCleaner(IContentProcessor):
 
         return validated
 
-    def estimate_processing_time(self, content_length: int, options: ProcessingOptions) -> float:
+    def estimate_processing_time(
+        self, content_length: int, options: ProcessingOptions
+    ) -> float:
         """
         Estimate processing time for metadata cleanup.
 

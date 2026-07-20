@@ -36,7 +36,7 @@ class ReadingOrderReconstructor(IContentProcessor):
         content: str,
         metadata: Dict[str, Any],
         options: ProcessingOptions,
-        context: Dict[str, Any]
+        context: Dict[str, Any],
     ) -> tuple[str, Dict[str, Any]]:
         """
         Reconstruct reading order for content.
@@ -54,7 +54,7 @@ class ReadingOrderReconstructor(IContentProcessor):
             return content, metadata
 
         # If we have heading associations, use them for ordering
-        content_sections = metadata.get('content_sections', [])
+        content_sections = metadata.get("content_sections", [])
 
         if content_sections and options.respect_html_structure:
             # Reorder content based on HTML structure
@@ -68,19 +68,20 @@ class ReadingOrderReconstructor(IContentProcessor):
 
         # Update metadata
         metadata["reading_order_reconstructed"] = True
-        metadata["reading_order_segments"] = len(content_sections) if content_sections else 1
+        metadata["reading_order_segments"] = (
+            len(content_sections) if content_sections else 1
+        )
 
         # Track metrics
         context.setdefault("metrics", {})
-        context["metrics"]["reading_order_segments"] = len(content_sections) if content_sections else 1
+        context["metrics"]["reading_order_segments"] = (
+            len(content_sections) if content_sections else 1
+        )
 
         return reordered_content, metadata
 
     def validate(
-        self,
-        content: str,
-        metadata: Dict[str, Any],
-        options: ProcessingOptions
+        self, content: str, metadata: Dict[str, Any], options: ProcessingOptions
     ) -> list[str]:
         """
         Validate content for reading order reconstruction.
@@ -97,15 +98,14 @@ class ReadingOrderReconstructor(IContentProcessor):
 
         # Check if both options are enabled (conflict)
         if options.respect_html_structure and options.fallback_to_visual_order:
-            errors.append("Both HTML structure and visual order fallback cannot be enabled")
+            errors.append(
+                "Both HTML structure and visual order fallback cannot be enabled"
+            )
 
         return errors
 
     def get_processing_metrics(
-        self,
-        input_length: int,
-        output_length: int,
-        duration_seconds: float
+        self, input_length: int, output_length: int, duration_seconds: float
     ) -> Dict[str, Any]:
         """
         Calculate processing metrics for reading order reconstruction.
@@ -136,18 +136,20 @@ class ReadingOrderReconstructor(IContentProcessor):
             Content reordered by HTML structure
         """
         # Sort by position to maintain logical order
-        sorted_sections = sorted(content_sections, key=lambda x: x['position'])
+        sorted_sections = sorted(content_sections, key=lambda x: x["position"])
 
         # Concatenate content
         reordered = []
         for section in sorted_sections:
-            if section.get('heading'):
-                heading_text = f"{'#' * section['heading']['level']} {section['heading']['text']}"
+            if section.get("heading"):
+                heading_text = (
+                    f"{'#' * section['heading']['level']} {section['heading']['text']}"
+                )
                 reordered.append(heading_text)
 
-            reordered.append(section['content'])
+            reordered.append(section["content"])
 
-        return '\n\n'.join(reordered)
+        return "\n\n".join(reordered)
 
     def _reorder_by_visual_order(self, content: str) -> str:
         """
@@ -160,13 +162,15 @@ class ReadingOrderReconstructor(IContentProcessor):
             Content in visual order
         """
         # For visual order, we use simple line-based ordering
-        lines = content.split('\n')
+        lines = content.split("\n")
 
         # Remove empty lines and reorder
         non_empty_lines = [line for line in lines if line.strip()]
-        return '\n'.join(non_empty_lines)
+        return "\n".join(non_empty_lines)
 
-    def estimate_processing_time(self, content_length: int, options: ProcessingOptions) -> float:
+    def estimate_processing_time(
+        self, content_length: int, options: ProcessingOptions
+    ) -> float:
         """
         Estimate processing time for reading order reconstruction.
 
