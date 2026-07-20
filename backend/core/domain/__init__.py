@@ -37,13 +37,34 @@ Clean Architecture:
 
 This module contains:
 - crawler: Crawl result and metric entities
+- parser: Parser result and extracted elements
 """
 
 from backend.core.domain.crawler import CrawlerConfig, CrawlMetrics, CrawlResult
+from backend.core.domain.parser import (
+    ContentType,
+    MetaData,
+    Heading,
+    Link,
+    Image,
+    Script,
+    Stylesheet,
+    ParsingMetrics,
+    ParserResult,
+)
 
 # Export for easy import
 __all__ = [
     "CrawlMetrics",
     "CrawlResult",
     "CrawlerConfig",
+    "ContentType",
+    "MetaData",
+    "Heading",
+    "Link",
+    "Image",
+    "Script",
+    "Stylesheet",
+    "ParsingMetrics",
+    "ParserResult",
 ]

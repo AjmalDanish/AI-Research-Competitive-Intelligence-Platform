@@ -1,25 +1,38 @@
 """
-Parser Module
+Parser module for HTML content extraction and analysis.
 
-HTML parsing functionality.
-
-Purpose:
-- Parse HTML content
-- Extract structure
-- Support multiple parsers
-
-Clean Architecture:
-- Infrastructure layer
-- HTML parsing implementation
-- Depends on core interfaces
-
-This module will be populated in Milestone 4 with:
-- BeautifulSoup parser
-- Trafilatura parser
-- HTML structure extraction
-
+This module provides parsing capabilities using BeautifulSoup4
+and Trafilatura for comprehensive HTML content extraction.
 """
 
-# Parser implementation will be added in Milestone 4
+from backend.parser.parser_service import ParserService, parser_service, get_parser_service
+from backend.parser.exceptions import (
+    ParserException,
+    EmptyContentError,
+    InvalidHTMLError,
+    ParserTimeoutError,
+    UnsupportedFormatError,
+    ParserNotFoundError,
+    ExtractionError,
+)
+from backend.parser.implementations.beautifulsoup_parser import BeautifulSoupParser
+from backend.parser.implementations.trafilatura_parser import TrafilaturaParser
 
-__all__ = []
+# Export for easy import
+__all__ = [
+    # Service
+    "ParserService",
+    "parser_service",
+    "get_parser_service",
+    # Exceptions
+    "ParserException",
+    "EmptyContentError",
+    "InvalidHTMLError",
+    "ParserTimeoutError",
+    "UnsupportedFormatError",
+    "ParserNotFoundError",
+    "ExtractionError",
+    # Implementations
+    "BeautifulSoupParser",
+    "TrafilaturaParser",
+]

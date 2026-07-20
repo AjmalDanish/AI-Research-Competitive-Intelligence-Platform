@@ -1,7 +1,7 @@
 """
-Crawler Interface Module
+Interfaces Module
 
-Interfaces for the crawler module.
+Interfaces for crawler and parser modules.
 
 Clean Architecture:
 - Core layer (interfaces)
@@ -10,8 +10,10 @@ Clean Architecture:
 """
 
 from backend.core.interfaces.crawler import ICrawler
+from backend.core.interfaces.parser import IParser
 
 # Export for easy import
 __all__ = [
     "ICrawler",
+    "IParser",
 ]
