@@ -1,0 +1,201 @@
+# Technology Detection Rules
+# Version: 1.0.0
+
+version: "1.0.0"
+extractor: "technology"
+description: "Deterministic technology detection patterns"
+
+rules:
+  # Frontend Frameworks - React
+  react_script:
+    pattern: '<script[^>]*react(-dom)?(\.(development|production))?(\.min)?\.js["\']'
+    confidence: 0.90
+    evidence_kind: "script_url"
+    confidence_source: "verified_pattern"
+    technology_type: "frontend"
+    technology: "React"
+    enabled: true
+    metadata:
+      description: "React detected from script URL"
+
+  react_meta:
+    pattern: '<meta[^>]*name=["\']generator["\'][^>]*content=["\'][^"]*React[^"\']*["\']'
+    confidence: 0.92
+    evidence_kind: "meta_tags"
+    confidence_source: "verified_pattern"
+    technology_type: "frontend"
+    technology: "React"
+    enabled: true
+    metadata:
+      description: "React detected from meta generator tag"
+
+  # Frontend Frameworks - Vue.js
+  vuejs_script:
+    pattern: '<script[^>]*vue(\.(runtime|global))?(\.min)?\.js["\']'
+    confidence: 0.90
+    evidence_kind: "script_url"
+    confidence_source: "verified_pattern"
+    technology_type: "frontend"
+    technology: "Vue.js"
+    enabled: true
+    metadata:
+      description: "Vue.js detected from script URL"
+
+  # Frontend Frameworks - Angular
+  angular_script:
+    pattern: '<script[^>]*angular(\.(core|common))?(\.min)?\.js["\']'
+    confidence: 0.90
+    evidence_kind: "script_url"
+    confidence_source: "verified_pattern"
+    technology_type: "frontend"
+    technology: "Angular"
+    enabled: true
+    metadata:
+      description: "Angular detected from script URL"
+
+  # Frontend Frameworks - Next.js
+  nextjs_meta:
+    pattern: '<meta[^>]*name=["\']generator["\'][^>]*content=["\'][^"]*Next\.js[^"\']*["\']'
+    confidence: 0.92
+    evidence_kind: "meta_tags"
+    confidence_source: "verified_pattern"
+    technology_type: "frontend"
+    technology: "Next.js"
+    enabled: true
+    metadata:
+      description: "Next.js detected from meta generator tag"
+
+  # Backend Frameworks - Django
+  django_cookie:
+    pattern: 'Set-Cookie:\s*csrftoken'
+    confidence: 0.85
+    evidence_kind: "http_headers"
+    confidence_source: "verified_pattern"
+    technology_type: "backend"
+    technology: "Django"
+    enabled: true
+    metadata:
+      description: "Django detected from CSRF cookie"
+
+  django_meta:
+    pattern: '<meta[^>]*name=["\']generator["\'][^>]*content=["\'][^"]*Django[^"\']*["\']'
+    confidence: 0.92
+    evidence_kind: "meta_tags"
+    confidence_source: "verified_pattern"
+    technology_type: "backend"
+    technology: "Django"
+    enabled: true
+    metadata:
+      description: "Django detected from meta generator tag"
+
+  # Backend Frameworks - Flask
+  flask_cookie:
+    pattern: 'Set-Cookie:\s*session='
+    confidence: 0.75
+    evidence_kind: "http_headers"
+    confidence_source: "weak_pattern"
+    technology_type: "backend"
+    technology: "Flask"
+    enabled: true
+    metadata:
+      description: "Flask detected from session cookie"
+
+  # Backend Frameworks - FastAPI
+  fastapi_header:
+    pattern: 'Server:\s*[uvicorn/]*fastapi'
+    confidence: 0.90
+    evidence_kind: "http_headers"
+    confidence_source: "verified_pattern"
+    technology_type: "backend"
+    technology: "FastAPI"
+    enabled: true
+    metadata:
+      description: "FastAPI detected from server header"
+
+  # CMS - WordPress
+  wordpress_meta:
+    pattern: '<meta[^>]*name=["\']generator["\'][^>]*content=["\'][^"]*WordPress[^"\']*["\']'
+    confidence: 0.98
+    evidence_kind: "meta_tags"
+    confidence_source: "verified_pattern"
+    technology_type: "cms"
+    technology: "WordPress"
+    enabled: true
+    metadata:
+      description: "WordPress detected from meta generator tag"
+
+  wordpress_path:
+    pattern: '/wp-content/|/wp-includes/'
+    confidence: 0.92
+    evidence_kind: "html_structure"
+    confidence_source: "verified_pattern"
+    technology_type: "cms"
+    technology: "WordPress"
+    enabled: true
+    metadata:
+      description: "WordPress detected from path structure"
+
+  # CMS - Drupal
+  drupal_meta:
+    pattern: '<meta[^>]*name=["\']generator["\'][^>]*content=["\'][^"]*Drupal[^"\']*["\']'
+    confidence: 0.98
+    evidence_kind: "meta_tags"
+    confidence_source: "verified_pattern"
+    technology_type: "cms"
+    technology: "Drupal"
+    enabled: true
+    metadata:
+      description: "Drupal detected from meta generator tag"
+
+  # Analytics - Google Analytics
+  google_analytics:
+    pattern: '<script[^>]*google-analytics\.com/analytics\.js'
+    confidence: 0.90
+    evidence_kind: "script_url"
+    confidence_source: "verified_pattern"
+    technology_type: "analytics"
+    technology: "Google Analytics"
+    enabled: true
+    metadata:
+      description: "Google Analytics detected from script URL"
+
+  google_analytics_gtag:
+    pattern: '<script[^>]*www\.googletagmanager\.com/gtag/js'
+    confidence: 0.90
+    evidence_kind: "script_url"
+    confidence_source: "verified_pattern"
+    technology_type: "analytics"
+    technology: "Google Analytics"
+    enabled: true
+    metadata:
+      description: "Google Analytics gtag detected"
+
+  # Infrastructure - Cloudflare
+  cloudflare_header:
+    pattern: 'Server:\s*cloudflare'
+    confidence: 0.90
+    evidence_kind: "http_headers"
+    confidence_source: "verified_pattern"
+    technology_type: "infrastructure"
+    technology: "Cloudflare"
+    enabled: true
+    metadata:
+      description: "Cloudflare detected from server header"
+
+  # Infrastructure - Vercel
+  vercel_header:
+    pattern: 'x-vercel-id:'
+    confidence: 0.92
+    evidence_kind: "http_headers"
+    confidence_source: "verified_pattern"
+    technology_type: "infrastructure"
+    technology: "Vercel"
+    enabled: true
+    metadata:
+      description: "Vercel detected from custom header"
+
+metadata:
+  created_at: "2026-07-20"
+  author: "AI Research Platform"
+  confidence_strategy: "pattern_based"
+  deterministic: true

@@ -1,0 +1,100 @@
+# Organization Extraction Rules
+# Version: 1.0.0
+
+version: "1.0.0"
+extractor: "organization"
+description: "Deterministic organization extraction patterns"
+
+rules:
+  # High confidence: JSON-LD Organization
+  json_ld_organization:
+    pattern: '"@type"\s*:\s*"Organization"\s*,\s*"name"\s*:\s*"([^"]+)"'
+    confidence: 1.00
+    evidence_kind: "json_ld"
+    confidence_source: "structured_data"
+    enabled: true
+    metadata:
+      description: "Organization from JSON-LD structured data"
+
+  # High confidence: Schema.org Organization
+  schema_org_organization:
+    pattern: 'itemprop="name"[^>]*>([^<]+)</[^>]*>.*?itemprop="affiliation"[^>]*>([^<]+)</[^>]*>'
+    confidence: 0.98
+    evidence_kind: "schema_org"
+    confidence_source: "structured_data"
+    enabled: true
+    metadata:
+      description: "Organization from Schema.org markup"
+
+  # High confidence: Legal entity patterns
+  legal_entity_llc:
+    pattern: '\b([A-Z][a-zA-Z\s&]+(?:LLC|L\.L\.C\.|Limited Liability Company))\b'
+    confidence: 0.92
+    evidence_kind: "regex_match"
+    confidence_source: "verified_pattern"
+    enabled: true
+    metadata:
+      description: "Organization with LLC suffix"
+
+  legal_entity_inc:
+    pattern: '\b([A-Z][a-zA-Z\s&]+(?:Inc|Inc\.|Incorporated))\b'
+    confidence: 0.92
+    evidence_kind: "regex_match"
+    confidence_source: "verified_pattern"
+    enabled: true
+    metadata:
+      description: "Organization with Inc suffix"
+
+  legal_entity_ltd:
+    pattern: '\b([A-Z][a-zA-Z\s&]+(?:Ltd|Ltd\.|Limited))\b'
+    confidence: 0.92
+    evidence_kind: "regex_match"
+    confidence_source: "verified_pattern"
+    enabled: true
+    metadata:
+      description: "Organization with Ltd suffix"
+
+  legal_entity_corporation:
+    pattern: '\b([A-Z][a-zA-Z\s&]+(?:Corp|Corp\.|Corporation))\b'
+    confidence: 0.90
+    evidence_kind: "regex_match"
+    confidence_source: "verified_pattern"
+    enabled: true
+    metadata:
+      description: "Organization with Corp suffix"
+
+  # Medium confidence: Copyright patterns
+  copyright_organization:
+    pattern: '©\s*\d{4}\s*([A-Z][a-zA-Z0-9\s&\.]+)'
+    confidence: 0.85
+    evidence_kind: "regex_match"
+    confidence_source: "verified_pattern"
+    enabled: true
+    metadata:
+      description: "Organization from copyright notice"
+
+  # Medium confidence: Footer patterns
+  footer_organization:
+    pattern: '(?:<footer[^>]*>.*?<p[^>]*>|<div[^>]*class="[^"]*footer[^"]*"[^>]*>.*?)\b([A-Z][a-zA-Z0-9\s&\.]+(?:LLC|Inc|Ltd|Corp))\b'
+    confidence: 0.80
+    evidence_kind: "html_structure"
+    confidence_source: "verified_pattern"
+    enabled: true
+    metadata:
+      description: "Organization from footer section"
+
+  # Low confidence: Generic company pattern
+  generic_company:
+    pattern: '\b([A-Z][a-zA-Z0-9]+(?:\s+[A-Z][a-zA-Z0-9]+)+)\s+(?:Company|Group|Solutions|Technologies|Systems|Services|Labs)\b'
+    confidence: 0.70
+    evidence_kind: "regex_match"
+    confidence_source: "weak_pattern"
+    enabled: true
+    metadata:
+      description: "Generic company name pattern"
+
+metadata:
+  created_at: "2026-07-20"
+  author: "AI Research Platform"
+  confidence_strategy: "pattern_based"
+  deterministic: true

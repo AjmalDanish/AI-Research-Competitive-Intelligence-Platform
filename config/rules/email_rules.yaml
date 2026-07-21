@@ -1,0 +1,72 @@
+# Email Extraction Rules
+# Version: 1.0.0
+
+version: "1.0.0"
+extractor: "email"
+description: "Deterministic email extraction patterns"
+
+rules:
+  # High confidence: JSON-LD structured data
+  json_ld_email:
+    pattern: '"email"\s*:\s*"([^@]+@[^@]+\.[^@]+)"'
+    confidence: 1.00
+    evidence_kind: "json_ld"
+    confidence_source: "structured_data"
+    enabled: true
+    metadata:
+      description: "Email from JSON-LD structured data"
+
+  # High confidence: Schema.org email
+  schema_org_email:
+    pattern: 'itemprop="email"[^>]*>([^@]+@[^@]+\.[^@]+)'
+    confidence: 0.98
+    evidence_kind: "schema_org"
+    confidence_source: "structured_data"
+    enabled: true
+    metadata:
+      description: "Email from Schema.org markup"
+
+  # Medium confidence: Standard mailto links
+  mailto_email:
+    pattern: 'mailto:([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})'
+    confidence: 0.92
+    evidence_kind: "html_structure"
+    confidence_source: "verified_pattern"
+    enabled: true
+    metadata:
+      description: "Email from mailto link"
+
+  # Medium confidence: Plain text email
+  plain_email:
+    pattern: '\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b'
+    confidence: 0.90
+    evidence_kind: "regex_match"
+    confidence_source: "verified_pattern"
+    enabled: true
+    metadata:
+      description: "Plain text email pattern"
+
+  # Low confidence: Obfuscated email patterns
+  obfuscated_email_dots:
+    pattern: '\b[a-zA-Z0-9._%+-]+\s*\[at\]\s*[a-zA-Z0-9.-]+\s*\[dot\]\s*[a-zA-Z]{2,}\b'
+    confidence: 0.75
+    evidence_kind: "regex_match"
+    confidence_source: "weak_pattern"
+    enabled: true
+    metadata:
+      description: "Obfuscated email with [at] and [dot]"
+
+  obfuscated_email_spaces:
+    pattern: '\b[a-zA-Z0-9._%+-]+\s+at\s+[a-zA-Z0-9.-]+\s+dot\s+[a-zA-Z]{2,}\b'
+    confidence: 0.70
+    evidence_kind: "regex_match"
+    confidence_source: "weak_pattern"
+    enabled: true
+    metadata:
+      description: "Obfuscated email with 'at' and 'dot' separators"
+
+metadata:
+  created_at: "2026-07-20"
+  author: "AI Research Platform"
+  confidence_strategy: "pattern_based"
+  deterministic: true

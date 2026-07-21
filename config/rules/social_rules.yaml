@@ -1,0 +1,134 @@
+# Social Media Detection Rules
+# Version: 1.0.0
+
+version: "1.0.0"
+extractor: "social"
+description: "Deterministic social media profile detection patterns"
+
+rules:
+  # GitHub
+  github_profile:
+    pattern: '(https?://(?:www\.)?github\.com/[a-zA-Z0-9_-]+)'
+    confidence: 0.95
+    evidence_kind: "regex_match"
+    confidence_source: "verified_pattern"
+    platform: "github"
+    enabled: true
+    metadata:
+      description: "GitHub profile URL"
+
+  # LinkedIn
+  linkedin_profile:
+    pattern: '(https?://(?:www\.)?linkedin\.com/(in|company)/[a-zA-Z0-9_-]+)'
+    confidence: 0.95
+    evidence_kind: "regex_match"
+    confidence_source: "verified_pattern"
+    platform: "linkedin"
+    enabled: true
+    metadata:
+      description: "LinkedIn profile URL"
+
+  # Twitter/X
+  twitter_profile:
+    pattern: '(https?://(?:www\.)?(twitter|x)\.com/[a-zA-Z0-9_]{1,15})'
+    confidence: 0.95
+    evidence_kind: "regex_match"
+    confidence_source: "verified_pattern"
+    platform: "twitter"
+    enabled: true
+    metadata:
+      description: "Twitter/X profile URL"
+
+  # Facebook
+  facebook_profile:
+    pattern: '(https?://(?:www\.)?facebook\.com/[a-zA-Z0-9.-]+)'
+    confidence: 0.90
+    evidence_kind: "regex_match"
+    confidence_source: "verified_pattern"
+    platform: "facebook"
+    enabled: true
+    metadata:
+      description: "Facebook profile URL"
+
+  # Instagram
+  instagram_profile:
+    pattern: '(https?://(?:www\.)?instagram\.com/[a-zA-Z0-9._]+)'
+    confidence: 0.90
+    evidence_kind: "regex_match"
+    confidence_source: "verified_pattern"
+    platform: "instagram"
+    enabled: true
+    metadata:
+      description: "Instagram profile URL"
+
+  # YouTube
+  youtube_profile:
+    pattern: '(https?://(?:www\.)?youtube\.com/(channel/|c/|user/|@)?[a-zA-Z0-9_-]+)'
+    confidence: 0.90
+    evidence_kind: "regex_match"
+    confidence_source: "verified_pattern"
+    platform: "youtube"
+    enabled: true
+    metadata:
+      description: "YouTube profile URL"
+
+  # TikTok
+  tiktok_profile:
+    pattern: '(https?://(?:www\.)?tiktok\.com/@[a-zA-Z0-9_.]+)'
+    confidence: 0.88
+    evidence_kind: "regex_match"
+    confidence_source: "verified_pattern"
+    platform: "tiktok"
+    enabled: true
+    metadata:
+      description: "TikTok profile URL"
+
+  # Discord
+  discord_server:
+    pattern: '(https?://(?:www\.)?discord\.(gg|com)/[a-zA-Z0-9_-]+)'
+    confidence: 0.88
+    evidence_kind: "regex_match"
+    confidence_source: "verified_pattern"
+    platform: "discord"
+    enabled: true
+    metadata:
+      description: "Discord server URL"
+
+  # Reddit
+  reddit_profile:
+    pattern: '(https?://(?:www\.)?reddit\.com/user/[a-zA-Z0-9_-]+)'
+    confidence: 0.88
+    evidence_kind: "regex_match"
+    confidence_source: "verified_pattern"
+    platform: "reddit"
+    enabled: true
+    metadata:
+      description: "Reddit profile URL"
+
+  # Medium
+  medium_profile:
+    pattern: '(https?://(?:www\.)?medium\.com/@[a-zA-Z0-9]+)'
+    confidence: 0.85
+    evidence_kind: "regex_match"
+    confidence_source: "verified_pattern"
+    platform: "medium"
+    enabled: true
+    metadata:
+      description: "Medium profile URL"
+
+  # Mastodon
+  mastodon_profile:
+    pattern: '(https?://[a-zA-Z0-9.-]+/@[a-zA-Z0-9_]+)'
+    confidence: 0.75
+    evidence_kind: "regex_match"
+    confidence_source: "verified_pattern"
+    platform: "mastodon"
+    enabled: true
+    metadata:
+      description: "Mastodon profile URL (federated)"
+
+metadata:
+  created_at: "2026-07-20"
+  author: "AI Research Platform"
+  confidence_strategy: "pattern_based"
+  deterministic: true

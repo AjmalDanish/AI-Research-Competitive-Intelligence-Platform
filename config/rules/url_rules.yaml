@@ -1,0 +1,83 @@
+# URL Extraction Rules
+# Version: 1.0.0
+
+version: "1.0.0"
+extractor: "url"
+description: "Deterministic URL extraction patterns"
+
+rules:
+  # High confidence: JSON-LD structured data
+  json_ld_url:
+    pattern: '"url"\s*:\s*"((https?|ftp)://[^"]+)"'
+    confidence: 1.00
+    evidence_kind: "json_ld"
+    confidence_source: "structured_data"
+    enabled: true
+    metadata:
+      description: "URL from JSON-LD structured data"
+
+  # High confidence: Canonical URL
+  canonical_url:
+    pattern: 'rel="canonical"[^>]*href="((https?|ftp)://[^"]+)"'
+    confidence: 0.98
+    evidence_kind: "html_structure"
+    confidence_source: "verified_pattern"
+    enabled: true
+    metadata:
+      description: "Canonical URL from link tag"
+
+  # High confidence: Standard HTTP/HTTPS links
+  standard_url:
+    pattern: 'href="((https?|ftp)://[^"]+)"'
+    confidence: 0.95
+    evidence_kind: "html_structure"
+    confidence_source: "verified_pattern"
+    enabled: true
+    metadata:
+      description: "Standard HTTP/HTTPS URL in href"
+
+  # Medium confidence: Plain text URLs
+  plain_text_url:
+    pattern: '\b(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})\b'
+    confidence: 0.88
+    evidence_kind: "regex_match"
+    confidence_source: "verified_pattern"
+    enabled: true
+    metadata:
+      description: "Plain text URL pattern"
+
+  # Medium confidence: Script source URLs
+  script_url:
+    pattern: '<script[^>]*src="((https?|ftp)://[^"]+)"'
+    confidence: 0.90
+    evidence_kind: "script_url"
+    confidence_source: "verified_pattern"
+    enabled: true
+    metadata:
+      description: "URL from script src attribute"
+
+  # Medium confidence: Stylesheet URLs
+  stylesheet_url:
+    pattern: '<link[^>]*rel="stylesheet"[^>]*href="((https?|ftp)://[^"]+)"'
+    confidence: 0.90
+    evidence_kind: "stylesheet_url"
+    confidence_source: "verified_pattern"
+    enabled: true
+    metadata:
+      description: "URL from stylesheet link"
+
+  # Low confidence: Domain-only pattern
+  domain_only:
+    pattern: '\b[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}\b'
+    confidence: 0.50
+    evidence_kind: "regex_match"
+    confidence_source: "candidate"
+    enabled: false
+    metadata:
+      description: "Domain-only pattern (low confidence)"
+
+metadata:
+  created_at: "2026-07-20"
+  author: "AI Research Platform"
+  confidence_strategy: "pattern_based"
+  deterministic: true

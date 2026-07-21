@@ -1,28 +1,17 @@
 """
-Extractor Module
+Information Extraction Module.
 
-Information extraction functionality.
-
-Purpose:
-- Extract metadata
-- Extract contact information
-- Extract social links
-- Extract company details
-
-Clean Architecture:
-- Infrastructure layer
-- Information extraction implementation
-- Depends on core interfaces
-
-This module will be populated in Milestone 5 with:
-- Metadata extractor
-- Contact extractor
-- Social link extractor
-- Link extractor
-- Company detail extractor
-
+This module provides deterministic, evidence-based information extraction
+from processed content. It serves as the canonical knowledge layer for
+future AI modules.
 """
 
-# Extractor implementation will be added in Milestone 5
+from backend.extractor.extractor_service import ExtractionService
+from backend.extractor.registry import ExtractionRegistry
+from backend.extractor.rule_loader import RuleLoader
 
-__all__ = []
+__all__ = [
+    "ExtractionService",
+    "ExtractionRegistry",
+    "RuleLoader",
+]
